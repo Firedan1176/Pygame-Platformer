@@ -3,6 +3,9 @@ import physics
 
 scene_gameobjects = []
 
+"""
+Base object for game, used for display, movement, and position
+"""
 class GameObject:
     spritesheet_surf = None
     spritesheet = []
@@ -19,9 +22,30 @@ class GameObject:
     def addSprite(self, rectangle):
         self.spritesheet.append(rectangle)
 
+#This sets position and allows input of two integers, a tuple, or a vector2        
+    def setPosition(self, x, y = None):
+        if type(x) == Vector2:
+            self.position = x
+        elif type(x) == tuple:
+            self.postion = Vector2(x[0],x[1])
+        elif type(x) == int and type(y) == int:
+            self.position = Vector2(x,y)
+
+#This is the same as setPosition but adding position instead of setting it
+    def move(self,dx,dy = None):
+        if type(dx) == Vector2:
+            self.position += dx
+        elif type(dx) == tuple:
+            self.position += Vector2(dx[0],dx[1])
+        elif type(dx) == int and type(dy) == int:
+            self.position += Vector2(dx,dy)
+
+"""
+Object for anything moving/organic in the game
+"""
 class Entity(GameObject):
-    def __init__(self):
-        GameObject.__init__(self)
+    def __init__(self, position = Vector2(0, 0), scale = Vector2(1, 1), rotation = 0):
+        GameObject.__init__(self, position, scale, rotation)
         self.static = True
         self.collisions = True
         self.velocity = Vector2(0, 0)
