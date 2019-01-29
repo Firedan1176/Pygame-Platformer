@@ -14,11 +14,10 @@ def intersect(a, b):
 def resolveCollision(a, b):
     rv = b.velocity - a.velocity
     normal = Vector2((b.position.x - a.position.x), -(b.position.y - a.position.y))
+    normal = normal.normalize()
     velAlongNormal = Vector2.dot(rv, normal)
 
-    if velAlongNormal > 0:
-        print("velAlongNormal > 0")
-        return
+    if velAlongNormal > 0: return
 
     e = min(a.restitution, b.restitution)
     j = -(1 + e) * velAlongNormal
@@ -26,11 +25,8 @@ def resolveCollision(a, b):
 
     impulse = j * normal
 
-    print(rv, normal, velAlongNormal, e, j, impulse)
-    
     a.velocity -= 1 / a.mass * impulse
     b.velocity += 1 / b.mass * impulse
-    
 
 gravity = Vector2(0, -1)
 

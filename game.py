@@ -8,34 +8,32 @@ import objects
 
 pygame.init()
 
-display = pygame.display.set_mode((480, 360))
+display = pygame.display.set_mode((950, 540))
 pygame.display.set_caption("Pygame Project")
 
 clock = pygame.time.Clock()
 
 
 class testScene:
-    def move(self, args):
-        self.player.velocity = args[0][0]
-
+    
     def __init__(self):
         test_sprite_surf = pygame.image.load("test_spritesheet.png").convert_alpha()
 
-        self.floor = Entity()
-        self.floor.position = Vector2(0, 10)
-        self.floor.scale = Vector2(480, 20)
-        self.floor.spritesheet_surf = test_sprite_surf
-        self.floor.addSprite(pygame.Rect(0, 0, self.floor.scale.x, self.floor.scale.y))
         
-        self.player = Entity()
-        self.player.static = False
-        self.player.position = Vector2(50, 200)
-        self.player.scale = Vector2(64, 64)
-        self.player.spritesheet_surf = test_sprite_surf
-        self.player.addSprite(pygame.Rect(64, 0, self.player.scale.x, self.player.scale.y))
+        self.a = Entity()
+        self.a.static = False
+        self.a.position = Vector2(300, 400)
+        self.a.scale = Vector2(32, 32)
+        self.a.spritesheet_surf = test_sprite_surf
+        self.a.addSprite(pygame.Rect(0, 0, self.a.scale.x, self.a.scale.y))
 
-        move_r_start = inputcontrol.createInput("move", K_RIGHT, KEYDOWN, self.move, Vector2(1, 0))
-        move_r_stop = inputcontrol.createInput("move", K_RIGHT, KEYUP, self.move, Vector2(0, 0))
+        self.b = Entity()
+        self.b.static = False
+        self.b.position = Vector2(150, 0)
+        self.b.velocity = Vector2(10, 25)
+        self.b.scale = Vector2(32, 32)
+        self.b.spritesheet_surf = test_sprite_surf
+        self.b.addSprite(pygame.Rect(32, 0, self.b.scale.x, self.b.scale.y))
 
 testScene()
 
@@ -49,7 +47,7 @@ while True:
 
         #Uber awesome event key processing
         elif event.type == KEYDOWN or event.type == KEYUP:
-            inputcontrol.evaluate(event)
+            self.b.evaluate(event)
 
     objects.solvePhysics()
     objects.draw(display)
