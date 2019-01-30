@@ -1,4 +1,5 @@
 import pygame
+import json
 from pygame.math import Vector2
 import utils
 import physics
@@ -27,8 +28,7 @@ def removeObject(obj):
 """
 Base object for game, used for display, movement and position
 """
-class GameObject:
-
+class GameObject():
     def __init__(self, z):
         self.z = z
         self.position = Vector2(0, 0)
@@ -47,30 +47,6 @@ class GameObject:
         self.sprite_source = scene_sprites[filename]
         for x in coords:
             self.sprites.append(pygame.Rect(x[0], x[1], self.scale.x, self.scale.y))
-
-    
-    #This sets position and allows input of two integers, a tuple, or a vector2        
-    def setPosition(self, x, y = None):
-        if type(x) == Vector2:
-            self.position = x
-        elif type(x) == tuple:
-            self.postion = Vector2(x[0],x[1])
-        elif type(x) == int and type(y) == int:
-            self.position = Vector2(x,y)
-
-    #This is the same as setPosition but adding position instead of setting it
-    def move(self,dx,dy = None):
-        if type(dx) == Vector2:
-            self.position += dx
-        elif type(dx) == tuple:
-            self.position += Vector2(dx[0],dx[1])
-        elif type(dx) == int and type(dy) == int:
-            self.position += Vector2(dx,dy)
-
-"""
-Object for anything moving/organic in the game
-"""
-
 
 #This sets position and allows input of two integers, a tuple, or a vector2
     def setPosition(self, x, y = None):
@@ -102,7 +78,6 @@ class Entity(GameObject):
     
     def __init__(self, z):
         super().__init__(z)
-        #GameObject.__init__(self)
         self.static = True
         self.collisions = True
         self.velocity = Vector2(0, 0)
@@ -110,9 +85,12 @@ class Entity(GameObject):
         self.restitution = 0.2 #debug test value
 
 
-#Returns sublist of scene_gameobjects where each item is the same class as classType or its base class(es)
+#Returns sublist of scene_gameobjects if it's the same classtype or one of its inherited are
+    #i.e. Entity will return all entities and classes that inherit from Entity (i.e. Player, Enemy, etc.)
+    #Note: Higher classes that inherit from a lower class will be returned.
+    #i.e. Entity will return <type 'Player'>, not its child <type 'Entity'>
 def getObjectsOfType(classType = GameObject):
-    return [item for item in scene_gameobjects if item.__class__ == classType or classType in item.__class__.__bases__]
+    return [item for item in scene_gameobjects if classType in item.__class__.mro()]
 
 
 #Initiates physics solving
