@@ -1,28 +1,54 @@
+import pygame
+import json
 from pygame.math import Vector2
+import utils
 import physics
 
 scene_gameobjects = []
 
+scene_sprites = {}
+
+#Insert an object deriving from GameObject into the scene
+def insertObject(obj):
+    global scene_gameobjects
+    #Get the index of the next highest value
+    #Change 'x.z' to search by a different value other than the z depth
+    i = utils.binarySearch([x.z for x in scene_gameobjects], obj.z, 0, len(scene_gameobjects) - 1)
+    scene_gameobjects = scene_gameobjects[:i] + [obj] + scene_gameobjects[i:]
+
+#Remove an object from the scene
+#It may be wise to find a way to binary search and remove it
+#Note that you may need to iterate over the matched index a few times as some game elements
+#will have the same z value
+def removeObject(obj):
+    global scene_gameobjects
+    scene_gameobjects.remove(obj)
+    del obj
+
 """
-Base object for game, used for display, movement, and position
+Base object for game, used for display, movement and position
 """
-class GameObject:
-    spritesheet_surf = None
-    spritesheet = []
-    sprite_index = 0
-    
-    def __init__(self, position = Vector2(0, 0), scale = Vector2(1, 1), rotation = 0):
-        scene_gameobjects.append(self)
-        #self.id = len(scene_gameobjects) #Do something different than this        
-        self.position = position
-        self.scale = scale
-        self.rotation = rotation
+class GameObject():
+    def __init__(self, z):
+        self.z = z
+        self.position = Vector2(0, 0)
+        self.scale = Vector2(32, 32)
+        self.rotation = 0
+        self.sprite_index = 0 #default to the first sprite
+        self.sprites = []
 
+        global scene_gameobjects
+        insertObject(self)
 
-    def addSprite(self, rectangle):
-        self.spritesheet.append(rectangle)
+    def loadSprite(self, filename, coords):
+        global scene_sprites
+        if filename not in scene_sprites:
+            scene_sprites[filename] = pygame.image.load(filename).convert_alpha()
+        self.sprite_source = scene_sprites[filename]
+        for x in coords:
+            self.sprites.append(pygame.Rect(x[0], x[1], self.scale.x, self.scale.y))
 
-#This sets position and allows input of two integers, a tuple, or a vector2        
+#This sets position and allows input of two integers, a tuple, or a vector2
     def setPosition(self, x, y = None):
         if type(x) == Vector2:
             self.position = x
@@ -44,21 +70,28 @@ class GameObject:
 Object for anything moving/organic in the game
 """
 class Entity(GameObject):
-    def __init__(self, position = Vector2(0, 0), scale = Vector2(1, 1), rotation = 0):
-        GameObject.__init__(self, position, scale, rotation)
+    def __init__(self, z, static = True, collisions = True, velocity = Vector2(0, 0)):
+        super().__init__(z)
+        self.static = static
+        self.collisions = collisions
+        self.velocity = velocity
+    
+    def __init__(self, z):
+        super().__init__(z)
         self.static = True
         self.collisions = True
         self.velocity = Vector2(0, 0)
         self.mass = 1
         self.restitution = 0.2 #debug test value
 
-#Returns sublist of scene_gameobjects where each item is the same class as classType or its base class(es)
-def getObjectsOfType(classType = GameObject):
-    return [item for item in scene_gameobjects if item.__class__ == classType or classType in item.__class__.__bases__]
 
-def destroy(go):
-    scene_gameobjects.remove(go)
-    del go
+#Returns sublist of scene_gameobjects if it's the same classtype or one of its inherited are
+    #i.e. Entity will return all entities and classes that inherit from Entity (i.e. Player, Enemy, etc.)
+    #Note: Higher classes that inherit from a lower class will be returned.
+    #i.e. Entity will return <type 'Player'>, not its child <type 'Entity'>
+def getObjectsOfType(classType = GameObject):
+    return [item for item in scene_gameobjects if classType in item.__class__.mro()]
+
 
 #Initiates physics solving
 def solvePhysics():
@@ -67,5 +100,5 @@ def solvePhysics():
 #Draws objects.
 def draw(display):
     for obj in getObjectsOfType(GameObject):
-        if obj.spritesheet_surf and obj.spritesheet and len(obj.spritesheet) > 0:
-            display.blit(obj.spritesheet_surf, (obj.position[0], display.get_height() - obj.position[1] - obj.spritesheet[obj.sprite_index].height), obj.spritesheet[obj.sprite_index])
+        if obj.sprites and len(obj.sprites) > 0:
+            display.blit(obj.sprite_source, (obj.position[0] - obj.sprites[obj.sprite_index].width, display.get_height() - obj.position[1] - obj.sprites[obj.sprite_index].height), obj.sprites[obj.sprite_index])
