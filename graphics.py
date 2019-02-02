@@ -7,18 +7,19 @@ class Camera(GameObject):
 
     def __init__(self, z):
         super().__init__(z)
-        self.parallax = 0.25
-
-
-        self.resolution = pygame.display.get_surface().get_size()
+        self.parallax = 0.5
     
     def render(self, display):
-        for obj in reversed(objects.getObjectsOfType(GameObject)):
+        for obj in objects.getObjectsOfType(GameObject):
+            #Excluded GameObjects
+            if obj.__class__ in [Camera]: continue
             if obj.visible and obj.sprite and obj.z < self.z:
                 #Reorient the position
-                new_pos = Vector2(obj.position.x, self.resolution[1] - obj.position.y - obj.scale.y)
+                new_pos = Vector2(obj.position.x, display.get_height() - obj.position.y - obj.scale.y)
 
                 #Offset based on parallax
-                #new_pos *= (obj.z * self.parallax)
-                
-                display.blit(obj.sprite.get(), new_pos)
+
+                new_pos -= self.position * (obj.z * self.parallax)
+
+
+                display.blit(obj.sprite, new_pos)

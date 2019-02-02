@@ -47,10 +47,11 @@ def remove(iterator, val):
     iterator = iterator[:i - 1] + iterator[i:]
     return iterator
 
-
-#a = [37, 4, 19, 34, 10, 5, 9, 2]
-#
-#a = insertionSort(a)
-#print(a)
-#a = remove(a, 10)
-#print(a)
+#Generates a friendly name that increments until no new occurrence is in lst
+def friendlyName(name, lst):
+    count = 0
+    temp_name = name
+    while temp_name in lst:
+        count += 1
+        temp_name = name + " " + str(count)
+    return temp_name

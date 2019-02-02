@@ -28,18 +28,20 @@ def removeObject(obj):
 Base object for game, used for display, movement and position
 """
 class GameObject():
-    def __init__(self, z):
+    def __init__(self, z = 1, position = Vector2(0, 0), scale = Vector2(32, 32)):
         self.z = z
-        self.position = Vector2(0, 0)
-        self.scale = Vector2(32, 32)
+        self.position = position
+        self.scale = scale
         self.rotation = 0
-        self.sprite = None
         self.visible = True
 
         insertObject(self)
 
-    def buildSprite(self, filename):
-        self.sprite = Sprite(filename)
+    #Used to color the GameObject for testing
+    def colorize(self, color):
+        self.sprite = pygame.Surface(self.scale)
+        self.sprite.fill(color)
+    
         
 #This sets position and allows input of two integers, a tuple, or a vector2
     def setPosition(self, x, y = None):
