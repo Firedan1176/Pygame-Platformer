@@ -1,12 +1,11 @@
 import pygame
+from sprites import Sprite
 import json
 from pygame.math import Vector2
 import utils
 import physics
 
 scene_gameobjects = []
-
-scene_sprites = {}
 
 #Insert an object deriving from GameObject into the scene
 def insertObject(obj):
@@ -34,20 +33,14 @@ class GameObject():
         self.position = Vector2(0, 0)
         self.scale = Vector2(32, 32)
         self.rotation = 0
-        self.sprite_index = 0 #default to the first sprite
-        self.sprites = []
+        self.sprite = None
+        self.visible = True
 
-        global scene_gameobjects
         insertObject(self)
 
-    def loadSprite(self, filename, coords):
-        global scene_sprites
-        if filename not in scene_sprites:
-            scene_sprites[filename] = pygame.image.load(filename).convert_alpha()
-        self.sprite_source = scene_sprites[filename]
-        for x in coords:
-            self.sprites.append(pygame.Rect(x[0], x[1], self.scale.x, self.scale.y))
-
+    def buildSprite(self, filename):
+        self.sprite = Sprite(filename)
+        
 #This sets position and allows input of two integers, a tuple, or a vector2
     def setPosition(self, x, y = None):
         if type(x) == Vector2:
@@ -84,7 +77,6 @@ class Entity(GameObject):
         self.mass = 1
         self.restitution = 0.2 #debug test value
 
-
 #Returns sublist of scene_gameobjects if it's the same classtype or one of its inherited are
     #i.e. Entity will return all entities and classes that inherit from Entity (i.e. Player, Enemy, etc.)
     #Note: Higher classes that inherit from a lower class will be returned.
@@ -97,8 +89,3 @@ def getObjectsOfType(classType = GameObject):
 def solvePhysics():
     physics.solve(getObjectsOfType(Entity))
 
-#Draws objects.
-def draw(display):
-    for obj in getObjectsOfType(GameObject):
-        if obj.sprites and len(obj.sprites) > 0:
-            display.blit(obj.sprite_source, (obj.position[0] - obj.sprites[obj.sprite_index].width, display.get_height() - obj.position[1] - obj.sprites[obj.sprite_index].height), obj.sprites[obj.sprite_index])
