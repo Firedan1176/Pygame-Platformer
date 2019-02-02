@@ -1,6 +1,7 @@
 import pygame
 import inputcontrol
 import loading
+from graphics import Camera
 from pygame.math import Vector2
 import sys
 from pygame.locals import *
@@ -19,36 +20,18 @@ clock = pygame.time.Clock()
 class testScene:
     
     def __init__(self):
-        
-        self.a = Entity(1)
-        self.a.static = False
-        self.a.position = Vector2(300, 400)
-        self.a.scale = Vector2(64, 64)
-        self.a.mass = 1
-        self.a.loadSprite("test_spritesheet.png", [(0, 0)])
 
-        self.b = Entity(1)
-        self.b.static = False
-        self.b.position = Vector2(200, 100)
-        self.b.velocity = Vector2(10, 25)
-        self.b.scale = Vector2(32, 32)
-        self.b.mass = 1
-        self.b.loadSprite("test_spritesheet.png", [(32, 0)])
+        import random            
 
-        self.bg = GameObject(0)
-        self.bg.position = Vector2(960, 0)
-        self.bg.scale = Vector2(960, 540)
-        self.bg.loadSprite("dark_grey.png", [(0, 0)])
+        self.obj = GameObject(0)
+        self.obj.position = Vector2(0, 0)
+        self.obj.scale = Vector2(32, 32)
+        self.obj.buildSprite("tiles_spritesheet_256.png")
+        self.obj.sprite.partition("Test", pygame.Rect(0, 0, 256, 256), (32, 32))
 
-        for x in range(10):
-            a = Entity(1)
-            #self.floor.static = False
-            a.position = Vector2(x * 65, 10)
-            #a.velocity = Vector2(0, 50)
-            a.scale = Vector2(64, 64)
-            a.loadSprite("test_spritesheet.png", [(32, 32)])
+camera = Camera(15)
 
-testScene()
+a = testScene()
 
 while True:
     for event in pygame.event.get():
@@ -62,8 +45,8 @@ while True:
         elif event.type == KEYDOWN or event.type == KEYUP:
             inputcontrol.evaluate(event)
 
-    objects.solvePhysics()
-    objects.draw(display)
-
+    #objects.solvePhysics()    
+    camera.render(display)
+    a.obj.position += Vector2(1, 0)
     pygame.display.update()
     clock.tick(30)
