@@ -99,11 +99,5 @@ def solve(objs):
 
     for obja in objs:
         if not obja.static:
-            obja.velocity += gravity
-        for objb in objs:
-            if obja != objb and obja.collisions and objb.collisions and intersect(obja, objb):
-                resolveCollision4(obja, objb)
-                
-        if not obja.static:
             obja.position += obja.velocity
 
