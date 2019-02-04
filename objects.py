@@ -7,8 +7,11 @@ import physics
 
 scene_gameobjects = []
 
-#Insert an object deriving from GameObject into the scene
+"""Inserts a GameObject into the scene."""
 def insertObject(obj):
+    if not Gameobject in obj.mbo():
+        raise TypeError('The object passed must inherit GameObject')
+    
     global scene_gameobjects
     #Get the index of the next highest value
     #Change 'x.z' to search by a different value other than the z depth
@@ -19,6 +22,7 @@ def insertObject(obj):
 #It may be wise to find a way to binary search and remove it
 #Note that you may need to iterate over the matched index a few times as some game elements
 #will have the same z value
+"""Removes a GameObject from the scene."""
 def removeObject(obj):
     global scene_gameobjects
     scene_gameobjects.remove(obj)
@@ -37,13 +41,13 @@ class GameObject():
 
         insertObject(self)
 
-    #Used to color the GameObject for testing
+    """Used to color the GameObject for testing"""
     def colorize(self, color):
         self.sprite = pygame.Surface(self.scale)
         self.sprite.fill(color)
     
         
-#This sets position and allows input of two integers, a tuple, or a vector2
+    """Sets position and allows input of two integers, a tuple, or a vector2"""
     def setPosition(self, x, y = None):
         if type(x) == Vector2:
             self.position = x
@@ -52,7 +56,7 @@ class GameObject():
         elif type(x) == int and type(y) == int:
             self.position = Vector2(x,y)
 
-#This is the same as setPosition but adding position instead of setting it
+    """The same as setPosition but adding position instead of setting it"""
     def move(self,dx,dy = None):
         if type(dx) == Vector2:
             self.position += dx
@@ -62,7 +66,7 @@ class GameObject():
             self.position += Vector2(dx,dy)
 
 """
-Object for anything moving/organic in the game
+Object which has physics interactions
 """
 class Entity(GameObject):
     def __init__(self, z, static = True, collisions = True, velocity = Vector2(0, 0)):

@@ -3,6 +3,8 @@ import inputcontrol
 import loading
 from graphics import Camera
 from pygame.math import Vector2
+import math
+import time
 import sys
 from pygame.locals import *
 from objects import *
@@ -21,14 +23,14 @@ clock = pygame.time.Clock()
 class testScene:
     
     def __init__(self):
-        background = GameObject(0, position = Vector2(0, 0), scale = Vector2(480, 270))
-        background.colorize((150, 210, 255))
+        self.background = GameObject(0, position = Vector2(0, 0), scale = Vector2(480, 270))
+        self.background.colorize((150, 210, 255))
 
-        sun = GameObject(1, position = Vector2(220, 150), scale = Vector2(40, 40))
-        sun.colorize((255, 255, 0))
+        self.sun = GameObject(1, position = Vector2(220, 150), scale = Vector2(40, 40))
+        self.sun.colorize((255, 255, 0))
 
-        cloud = GameObject(2, position = Vector2(250, 155), scale = Vector2(100, 30))
-        cloud.colorize((255, 255, 255))
+        self.cloud = GameObject(2, position = Vector2(250, 155), scale = Vector2(100, 30))
+        self.cloud.colorize((255, 255, 255))
 
         for x in range(30):
             a = GameObject(10, position = Vector2(x * 30, 0), scale = Vector2(28, 20))
@@ -50,6 +52,7 @@ inputcontrol.createAxis("Move Vertical", K_UP, K_DOWN, lambda x: moveCamera(Vect
 a = testScene()
 
 while True:
+    
     inputcontrol.evaluate(pygame.event.get())
 
     objects.solvePhysics()    
