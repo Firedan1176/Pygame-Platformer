@@ -7,6 +7,27 @@ import physics
 
 scene_gameobjects = []
 
+"""Inserts a GameObject into the scene."""
+def insertObject(obj):
+    if not Gameobject in obj.mbo():
+        raise TypeError('The object passed must inherit GameObject')
+    
+    global scene_gameobjects
+    #Get the index of the next highest value
+    #Change 'x.z' to search by a different value other than the z depth
+    i = utils.binarySearch([x.z for x in scene_gameobjects], obj.z, 0, len(scene_gameobjects) - 1)
+    scene_gameobjects = scene_gameobjects[:i] + [obj] + scene_gameobjects[i:]
+
+#Remove an object from the scene
+#It may be wise to find a way to binary search and remove it
+#Note that you may need to iterate over the matched index a few times as some game elements
+#will have the same z value
+"""Removes a GameObject from the scene."""
+def removeObject(obj):
+    global scene_gameobjects
+    scene_gameobjects.remove(obj)
+    del obj
+
 """
 Base object for game, used for display, movement and position
 """
@@ -69,24 +90,8 @@ class Entity(GameObject):
 def getObjectsOfType(classType = GameObject):
     return [item for item in scene_gameobjects if classType in item.__class__.mro()]
 
-"""Inserts a GameObject into the scene."""
-def insertObject(obj):
-    if not GameObject in obj.__class__.mro():
-        raise TypeError('The object passed must inherit GameObject')
-    
-    global scene_gameobjects
-    #Get the index of the next highest value
-    #Change 'x.z' to search by a different value other than the z depth
-    i = utils.binarySearch([x.z for x in scene_gameobjects], obj.z, 0, len(scene_gameobjects) - 1)
-    scene_gameobjects = scene_gameobjects[:i] + [obj] + scene_gameobjects[i:]
 
-#Remove an object from the scene
-#It may be wise to find a way to binary search and remove it
-#Note that you may need to iterate over the matched index a few times as some game elements
-#will have the same z value
-"""Removes a GameObject from the scene."""
-def removeObject(obj):
-    global scene_gameobjects
-    scene_gameobjects.remove(obj)
-    del obj
+#Initiates physics solving
+def solvePhysics():
+    physics.solve(getObjectsOfType(Entity))
 

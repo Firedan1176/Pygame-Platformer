@@ -1,6 +1,5 @@
 import pygame
 import objects
-from player import Player
 from pygame.math import Vector2
 from objects import GameObject
 
@@ -9,7 +8,7 @@ class Camera(GameObject):
     def __init__(self, z):
         super().__init__(z)
         self.parallax = 0.5
-
+    
     def render(self, display):
         for obj in objects.getObjectsOfType(GameObject):
             #Excluded GameObjects
