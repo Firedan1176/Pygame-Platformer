@@ -18,18 +18,24 @@ class userinput:
 
 class useraxis:
 
-    def __init__(self, name, positive, negative, action, *args):
-        self.value = 0
+    def __init__(self, name, positiveKey, negativeKey, action, *args):
         self.name = name
-        self.positive = positive
-        self.negative = negative
+        self.positiveKey = positiveKey
+        self.negativeKey = negativeKey
         self.action = action
         self.args = args or None
+        self.positive = False
+        self.negative = False
+
+    def getValue(self):
+        if self.positive == self.negative: return 0
+        if self.positive: return 1
+        if self.negative: return -1
 
 #Generates a new Axis object that will call lambda function
-def createAxis(name = "New axis", positive = None, negative = None, action = None, *args):
+def createAxis(name = "New axis", positiveKey = None, negativeKey = None, action = None, *args):
     name = friendlyName(name, inputScheme)
-    _axis = useraxis(name, positive, negative, action, args)
+    _axis = useraxis(name, positiveKey, negativeKey, action, args)
     inputScheme[name] = _axis
 
 def createInput(name = "New input", val = None, activation = 0, action = None, *args):
@@ -57,16 +63,15 @@ def evaluate(events):
             for item in inputScheme.values():
                 if item.__class__ == userinput and event.key == item.val and event.type == item.activation:
                     item.action(item.args)
-                    
                 elif item.__class__ == useraxis:
-                    if event.key == item.positive:
-                        if event.type == KEYDOWN: item.value = 1
-                        elif event.type == KEYUP: item.value = 0
-                    elif event.key == item.negative:
-                        if event.type == KEYDOWN: item.value = -1
-                        elif event.type == KEYUP: item.value = 0
+                    if event.key == item.positiveKey:
+                        if event.type == KEYDOWN: item.positive = True
+                        elif event.type == KEYUP: item.positive = False
+                    elif event.key == item.negativeKey:
+                        if event.type == KEYDOWN: item.negative = True
+                        elif event.type == KEYUP: item.negative = False
 
-    #TODO: This may be laggy. This evaluates EVERY axis if it's non-zero, and if there's a ton, then may be laggy
-    for item in [axis for axis in inputScheme.values() if axis.__class__ == useraxis]:
-        if item.value != 0: item.action(item.value)
-
+    #Evaluate changed axes after all events have been evaluated
+    for axis in [axes for axes in inputScheme.values() if axes.__class__ == useraxis]:
+        #Dict = {<type 'useraxis'> : int}, so indexing axes_totals at item (key) gives int (value)
+        axis.action(axis.getValue())
