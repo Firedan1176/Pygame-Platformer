@@ -70,7 +70,6 @@ class AnimationHandler():
     
     def __init__(self,name,spritelist,items=None):
         self.name = name
-        self.animations = []
         self.spritelist = spritelist
         if type(items) == list:
             self.animations = items
