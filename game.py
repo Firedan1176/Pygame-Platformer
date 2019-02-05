@@ -20,7 +20,7 @@ pygame.display.set_caption("Pygame Project")
 clock = pygame.time.Clock()
 
 
-class testScene:
+class testScene:    
     
     def __init__(self):
         self.background = GameObject(0, position = Vector2(0, 0), scale = Vector2(480, 270))
@@ -32,30 +32,34 @@ class testScene:
         self.cloud = GameObject(2, position = Vector2(250, 155), scale = Vector2(100, 30))
         self.cloud.colorize((255, 255, 255))
 
-        for x in range(30):
-            a = GameObject(10, position = Vector2(x * 30, 0), scale = Vector2(28, 20))
-            a.colorize((20, 100, 30))
+        self.floor = Entity(10)
+        self.floor.position = Vector2(40, 20)
+        self.floor.scale = Vector2(400, 20)
+        self.floor.colorize((20, 100, 30))
 
+        self.phys = Entity(10)
+        self.phys.position = Vector2(100, 100)
+        self.phys.scale = Vector2(50, 20)
+        self.phys.colorize((100, 100, 0))
+        for x in range(30):
             b = GameObject(4, position = Vector2(x * 100, 0), scale = Vector2(95, 80))
             b.colorize((50, 50, 50))
-        
 
-camera = Camera(15)
-
-def moveCamera(direction):
-    camera.position += direction
-
-inputcontrol.createAxis("Move Horizontal", K_RIGHT, K_LEFT, lambda x: moveCamera(Vector2(x, 0)))
-inputcontrol.createAxis("Move Vertical", K_UP, K_DOWN, lambda x: moveCamera(Vector2(0, -x)))
+        self.player = Player(10)
+        self.player.position = Vector2(200, 100)
+        self.player.scale = Vector2(16, 24)
+        self.player.colorize((0, 0, 0))
 
 
 a = testScene()
+camera = Camera(15)
+
+
 
 while True:
     
     inputcontrol.evaluate(pygame.event.get())
-
-    objects.solvePhysics()    
+    physics.solve(objects.getObjectsOfType(Entity))
     camera.render(gameScreen)
     scaled_display = pygame.transform.scale(gameScreen, (960, 540))
     display.blit(scaled_display, (0, 0))
