@@ -30,7 +30,6 @@ class SpriteList():
         self.fileaddition = {
                 None : 0
                 } #This is an additive key to skip towards the sprites from a certain file.
-        
         if type(dictionary) == dict: #Dictionary for indexes for sprites of a common animation.
             self.dictionary = dictionary 
         else:
@@ -78,7 +77,7 @@ class AnimationHandler():
         self.index = 0
         self.previousname = None
         
-    def pull(self,name2): #Name2 is called such to reduce confusion with self.name
+    def pull(self,name2): #Name2 is called such as wherein to reduce confusion with self.name
         if self.previousname != name2:
             self.index = 0
         if self.index >= self.spritelist.length(self.name+name2):

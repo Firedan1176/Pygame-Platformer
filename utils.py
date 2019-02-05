@@ -1,5 +1,5 @@
 #Contains utilities for sorting and inserting into a list of INTEGERS
-
+from pygame.math import Vector2
 
 #Searches for val in iterator or returns next highest value's index
 def binarySearch(iterator, val, start, end):
@@ -55,3 +55,8 @@ def friendlyName(name, lst):
         count += 1
         temp_name = name + " " + str(count)
     return temp_name
+
+def clamp(_min, _max, val):
+    if val > _max: return _max
+    if val < _min: return _min
+    return val

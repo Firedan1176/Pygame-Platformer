@@ -1,9 +1,8 @@
 import pygame
-from sprites import Sprite
-import json
 from pygame.math import Vector2
 import utils
 import physics
+import sprites
 
 scene_gameobjects = []
 
@@ -19,6 +18,9 @@ class GameObject():
         self.visible = True
 
         insertObject(self)
+
+    def __str__(self):
+        return "GameObject " + str(self.position) 
 
     """Used to color the GameObject for testing"""
     def colorize(self, color):
@@ -48,19 +50,14 @@ class GameObject():
 Object which has physics interactions
 """
 class Entity(GameObject):
-    def __init__(self, z, static = True, collisions = True, velocity = Vector2(0, 0)):
+    def __init__(self, z, static = True, velocity = Vector2(0, 0)):
         super().__init__(z)
         self.static = static
-        self.collisions = collisions
         self.velocity = velocity
-    
-    def __init__(self, z):
-        super().__init__(z)
-        self.static = True
-        self.collisions = True
-        self.velocity = Vector2(0, 0)
-        self.mass = 1
-        self.restitution = 0.2 #debug test value
+        self.collisionCallbacks = [] #Call these functions on collision
+
+        def __str__(self):
+            return "Entity " + str(self.position)
 
 #Returns sublist of scene_gameobjects if it's the same classtype or one of its inherited are
     #i.e. Entity will return all entities and classes that inherit from Entity (i.e. Player, Enemy, etc.)

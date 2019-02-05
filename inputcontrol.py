@@ -58,19 +58,36 @@ def evaluate(events):
             print("Closing game...")
             pygame.quit()
             sys.exit(0)
-            
-        elif event.type == KEYDOWN or event.type == KEYUP:
-            for item in inputScheme.values():
-                if item.__class__ == userinput and event.key == item.val and event.type == item.activation:
-                    item.action(item.args)
-                elif item.__class__ == useraxis:
-                    if event.key == item.positiveKey:
-                        if event.type == KEYDOWN: item.positive = True
-                        elif event.type == KEYUP: item.positive = False
-                    elif event.key == item.negativeKey:
-                        if event.type == KEYDOWN: item.negative = True
-                        elif event.type == KEYUP: item.negative = False
 
+        #TODO: Consolidate into only InputAxis
+        elif event.type in [KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP]:
+            for item in inputScheme.values():
+                #Button or Key press/release
+                if item.__class__ == userinput:
+                    #Keyboard
+                    if event.type in [KEYDOWN, KEYUP]:
+                        if event.key == item.val and event.type == item.activation:
+                            item.action(item.args)
+                    #Mouse
+                    elif event.type in [MOUSEBUTTONDOWN, MOUSEBUTTONUP]:
+                        if event.button == item.val and event.type == item.activation:
+                            item.action(item.args)
+                #Axis input (-1, 0, 1)
+                elif item.__class__ == useraxis:
+                    if event.type in [KEYDOWN, KEYUP]:
+                        if event.key == item.positiveKey:
+                            if event.type == KEYDOWN: item.positive = True
+                            elif event.type == KEYUP: item.positive = False
+                        elif event.key == item.negativeKey:
+                            if event.type == KEYDOWN: item.negative = True
+                            elif event.type == KEYUP: item.negative = False
+                    elif event.type in [MOUSEBUTTONDOWN, MOUSEBUTTONUP]:
+                        if event.button == item.positiveKey:
+                            if event.type == MOUSEBUTTONDOWN: item.positive = True
+                            elif event.type == MOUSEBUTTONUP: item.positive = False
+                        elif event.button == item.negativeKey:
+                            if event.type == MOUSEBUTTONDOWN: item.negative = True
+                            elif event.type == MOUSEBUTTONUP: item.negative = False
     #Evaluate changed axes after all events have been evaluated
     for axis in [axes for axes in inputScheme.values() if axes.__class__ == useraxis]:
         #Dict = {<type 'useraxis'> : int}, so indexing axes_totals at item (key) gives int (value)

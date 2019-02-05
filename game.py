@@ -21,7 +21,10 @@ clock = pygame.time.Clock()
 
 
 class testScene:    
-    
+
+    def pauseGame(self, x):
+        print("Pause game")
+        
     def __init__(self):
         self.background = GameObject(0, position = Vector2(0, 0), scale = Vector2(480, 270))
         self.background.colorize((150, 210, 255))
@@ -50,10 +53,13 @@ class testScene:
         self.player.scale = Vector2(16, 24)
         self.player.colorize((0, 0, 0))
 
+        #Initialize inputs
+        inputcontrol.createInput("Pause", K_ESCAPE, KEYDOWN, self.pauseGame)
+
 
 a = testScene()
 camera = Camera(15)
-
+camera.setTarget(a.player)
 
 
 while True:
@@ -64,4 +70,4 @@ while True:
     scaled_display = pygame.transform.scale(gameScreen, (960, 540))
     display.blit(scaled_display, (0, 0))
     pygame.display.update()
-    clock.tick(30)
+    clock.tick(60)
