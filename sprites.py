@@ -35,8 +35,8 @@ class SpriteList():
         else:
             self.dictionary = {}
             
-    def loadfile(self,path,size): #Should be self-explanitory, uses outside function
-        if path in self.filelist == False:
+    def loadFile(self,path,size): #Should be self-explanitory, uses outside function
+        if not path in self.filelist:
             sprites = buildSprites(path,size)
             for sprite in sprites:
                 self.spritelist.append(sprite)
@@ -44,12 +44,14 @@ class SpriteList():
             self.fileaddition[path] = len(self.spritelist) - len(sprites)
             
     def pullSprite(self,index,path=None): #Pullsprite gives a sprite from the total list
+        print(str(index + self.fileaddition[path]))
         return self.spritelist[index + self.fileaddition[path]]
     
     def pull(self,index,name): #Pull gives the frame of an animation
         return self.dictionary[name][index]
     
     def length(self,name): #Made for shorthand for checking length of animations
+        print(self.dictionary, name)
         return len(self.dictionary[name])
     
     """
@@ -59,11 +61,12 @@ class SpriteList():
     it's index within its own file by also giving the file's path through the path variable.
     """
     def setAnimation(self,indexes,name,path=None):
-        if name in self.dictionary == False:
+        if not name in self.dictionary:
             templist = []
             for index in indexes:
                 templist.append(index + self.fileaddition[path])
             self.dictionary[name] = templist
+            
             
 class AnimationHandler():
     

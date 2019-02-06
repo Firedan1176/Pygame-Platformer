@@ -11,6 +11,7 @@ from pygame.locals import *
 from objects import *
 from player import Player
 import objects
+import sprites
 
 pygame.init()
 
@@ -24,6 +25,10 @@ pygame.display.set_caption("Pygame Project")
 
 clock = pygame.time.Clock()
 
+
+sprite_list = sprites.SpriteList()
+sprite_list.loadFile('spritesheet.png', (32, 32))
+sprite_list.setAnimation([0], "Brick")
 
 class testScene:    
 
@@ -64,7 +69,15 @@ class testScene:
         self.phys5.scale = Vector2(50, 50)
         self.phys5.colorize((255, 255, 255))
 
+        self.spriteTest = GameObject(10)
+        self.spriteTest.position = Vector2(200, 110)
+        self.spriteTest.scale = Vector2(32, 32)
         
+        global sprite_list
+        #self.spriteTest.anim = sprites.AnimationHandler("", sprite_list)
+        #self.spriteTest.sprite = self.spriteTest.anim.pull("Brick")
+        self.spriteTest.sprite = sprite_list.pullSprite(0)
+
         for x in range(15):
             b = GameObject(4, position = Vector2(-100 + x * 50, -150), scale = Vector2(2, 750))
             b.colorize((50, 50, 50))
@@ -78,7 +91,7 @@ class testScene:
         self.player.colorize((200, 200, 200))
 
         self.text = ui.Text(text = "HELLO WORLD")
-        
+
         #Initialize inputs
         inputcontrol.createInput("Pause", K_ESCAPE, KEYDOWN, self.pauseGame)
 
