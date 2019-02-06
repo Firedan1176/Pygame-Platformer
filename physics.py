@@ -39,7 +39,6 @@ def solve(phys_objs):
                 obj.velocity.x = 0
                 obj.position.x = col.position.x + col.scale.x
                 col_normal.x = -1
-                
         obj.position.y += obj.velocity.y
         for col in getCollisions(obj, phys_objs):
             if obj.velocity.y > 0:
@@ -50,6 +49,7 @@ def solve(phys_objs):
                 obj.velocity.y = 0
                 obj.position.y = col.position.y + col.scale.y
                 col_normal.y = -1
-            for callback in obj.collisionCallbacks:
-                callback(col_normal)
+
+        for callback in obj.collisionCallbacks:
+            callback(col_normal)
 

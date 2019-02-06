@@ -77,6 +77,11 @@ def insertObject(obj):
     i = utils.binarySearch([x.z for x in scene_gameobjects], obj.z, 0, len(scene_gameobjects) - 1)
     scene_gameobjects = scene_gameobjects[:i] + [obj] + scene_gameobjects[i:]
 
+"""Clears all objects from the scene."""
+def unloadScene():
+    scene_gameobjects.clear()
+    
+
 #Remove an object from the scene
 #It may be wise to find a way to binary search and remove it
 #Note that you may need to iterate over the matched index a few times as some game elements

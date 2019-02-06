@@ -6,6 +6,7 @@ from pygame.math import Vector2
 import math
 import time
 import sys
+import ui
 from pygame.locals import *
 from objects import *
 from player import Player
@@ -13,8 +14,12 @@ import objects
 
 pygame.init()
 
-display = pygame.display.set_mode((960, 540))
-gameScreen = pygame.Surface((480, 270))
+SCREENWIDTH = 480
+SCREENHEIGHT = 270
+SCALEFACTOR = 2
+
+gameScreen = pygame.Surface((SCREENWIDTH, SCREENHEIGHT))
+display = pygame.display.set_mode((SCREENWIDTH * SCALEFACTOR, SCREENHEIGHT * SCALEFACTOR))
 pygame.display.set_caption("Pygame Project")
 
 clock = pygame.time.Clock()
@@ -27,32 +32,53 @@ class testScene:
         
     def __init__(self):
         self.background = GameObject(0, position = Vector2(0, 0), scale = Vector2(480, 270))
-        self.background.colorize((150, 210, 255))
-
-        self.sun = GameObject(1, position = Vector2(220, 150), scale = Vector2(40, 40))
-        self.sun.colorize((255, 255, 0))
-
-        self.cloud = GameObject(2, position = Vector2(250, 155), scale = Vector2(100, 30))
-        self.cloud.colorize((255, 255, 255))
+        self.background.colorize((20, 20, 20))
 
         self.floor = Entity(10)
-        self.floor.position = Vector2(40, 20)
-        self.floor.scale = Vector2(400, 20)
-        self.floor.colorize((20, 100, 30))
+        self.floor.position = Vector2(-2500, 20)
+        self.floor.scale = Vector2(5000, 20)
+        self.floor.colorize((100, 100, 100))
 
-        self.phys = Entity(10)
-        self.phys.position = Vector2(100, 100)
-        self.phys.scale = Vector2(50, 20)
-        self.phys.colorize((100, 100, 0))
+        self.phys1 = Entity(10)
+        self.phys1.position = Vector2(100, 110)
+        self.phys1.scale = Vector2(20, 350)
+        self.phys1.colorize((255, 255, 255))
+
+        self.phys2 = Entity(10)
+        self.phys2.position = Vector2(180, 110)
+        self.phys2.scale = Vector2(20, 500)
+        self.phys2.colorize((255, 255, 255))
+
+        self.phys3 = Entity(10)
+        self.phys3.position = Vector2(20, 450)
+        self.phys3.scale = Vector2(100, 20)
+        self.phys3.colorize((255, 255, 255))
+
+        self.phys4 = Entity(10)
+        self.phys4.position = Vector2(500, 40)
+        self.phys4.scale = Vector2(100, 50)
+        self.phys4.colorize((255, 255, 255))
+
+        self.phys5 = Entity(10)
+        self.phys5.position = Vector2(600, 70)
+        self.phys5.scale = Vector2(50, 50)
+        self.phys5.colorize((255, 255, 255))
+
+        
+        for x in range(15):
+            b = GameObject(4, position = Vector2(-100 + x * 50, -150), scale = Vector2(2, 750))
+            b.colorize((50, 50, 50))
         for x in range(30):
-            b = GameObject(4, position = Vector2(x * 100, 0), scale = Vector2(95, 80))
+            b = GameObject(4, position = Vector2(-150, x * 50), scale = Vector2(900, 2))
             b.colorize((50, 50, 50))
 
         self.player = Player(10)
         self.player.position = Vector2(200, 100)
         self.player.scale = Vector2(16, 24)
-        self.player.colorize((0, 0, 0))
+        self.player.colorize((200, 200, 200))
 
+        self.text = ui.Text(text = "HELLO WORLD")
+        
         #Initialize inputs
         inputcontrol.createInput("Pause", K_ESCAPE, KEYDOWN, self.pauseGame)
 
@@ -67,7 +93,8 @@ while True:
     inputcontrol.evaluate(pygame.event.get())
     physics.solve(objects.getObjectsOfType(Entity))
     camera.render(gameScreen)
-    scaled_display = pygame.transform.scale(gameScreen, (960, 540))
+    ui.render(gameScreen)
+    scaled_display = pygame.transform.scale(gameScreen, (SCREENWIDTH * SCALEFACTOR, SCREENHEIGHT * SCALEFACTOR))
     display.blit(scaled_display, (0, 0))
     pygame.display.update()
     clock.tick(60)
