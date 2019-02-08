@@ -1,0 +1,8 @@
+#Database of all objects
+
+"spritesheet.png"
+	0	"Brick"			GameObject	[32, 32]
+	1	"MossyBrick"	GameObject	[32, 32]
+	2	"Cobble_1"		GameObject	[32, 32]
+	5	"Window"		GameObject	[32, 32]
+	32	"Pillar"		GameObject	[64, 96]

@@ -6,6 +6,8 @@ import sprites
 
 scene_gameobjects = []
 
+"""List to hook functions to update objects"""
+scene_update_funcs = []
 """
 Base object for game, used for display, movement and position
 """
@@ -14,7 +16,6 @@ class GameObject():
         self.z = z
         self.position = position
         self.scale = scale
-        self.rotation = 0
         self.visible = True
 
         insertObject(self)

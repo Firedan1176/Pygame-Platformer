@@ -1,0 +1,27 @@
+SCREENWIDTH:480
+SCREENHEIGHT:270
+
+<Spritesheet>
+	1:'spritesheet.png'
+	2:'tiles_spritesheet_256.png'
+
+<GameObject>
+	z:0
+	pos:[0, 0]
+	scale:[SCREENWIDTH, SCREENHEIGHT]
+	color:[20, 20, 20]
+<Entity>
+	z:10
+	pos:[-2500, 20]
+	scale:[5000, 20]
+	color:[100, 100, 100]
+<Player>
+	z:10
+	pos:[200, 100]
+	scale:[16, 24]
+	color:[200, 200, 200]
+<GameObject>
+	z:5
+	pos:[200, 150]
+	scale:[32, 32]
+	sprite:[1, 0]

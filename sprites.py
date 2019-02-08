@@ -44,14 +44,12 @@ class SpriteList():
             self.fileaddition[path] = len(self.spritelist) - len(sprites)
             
     def pullSprite(self,index,path=None): #Pullsprite gives a sprite from the total list
-        print(str(index + self.fileaddition[path]))
         return self.spritelist[index + self.fileaddition[path]]
     
     def pull(self,index,name): #Pull gives the frame of an animation
-        return self.dictionary[name][index]
+        return self.spritelist[self.dictionary[name][index]]
     
     def length(self,name): #Made for shorthand for checking length of animations
-        print(self.dictionary, name)
         return len(self.dictionary[name])
     
     """

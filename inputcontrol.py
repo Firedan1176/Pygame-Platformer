@@ -39,13 +39,7 @@ def createAxis(name = "New axis", positiveKey = None, negativeKey = None, action
     inputScheme[name] = _axis
 
 def createInput(name = "New input", val = None, activation = 0, action = None, *args):
-    #Name check, tacks on a number to avoid overwriting
-    i = 0
-    newName = name
-    while newName in inputScheme:
-        i += 1
-        newName = name + " " + str(i)
-    name = newName
+    name = friendlyName(name, inputScheme)
     
     _input = userinput(name, val, activation, action, args)
     inputScheme[name] = _input
@@ -59,8 +53,7 @@ def evaluate(events):
             pygame.quit()
             sys.exit(0)
 
-        #TODO: Consolidate into only InputAxis
-        elif event.type in [KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP]:
+        elif event.type in [KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION]:
             for item in inputScheme.values():
                 #Button or Key press/release
                 if item.__class__ == userinput:
@@ -72,6 +65,9 @@ def evaluate(events):
                     elif event.type in [MOUSEBUTTONDOWN, MOUSEBUTTONUP]:
                         if event.button == item.val and event.type == item.activation:
                             item.action(item.args)
+                    elif event.type == MOUSEMOTION:
+                        mouse_pos = pygame.mouse.get_pos()
+                        item.action((mouse_pos[0] // item.val * item.val if item.val and not item.val == 0 else mouse_pos[0], mouse_pos[1] // item.val * item.val if item.val and not item.val == 0 else mouse_pos[1]))
                 #Axis input (-1, 0, 1)
                 elif item.__class__ == useraxis:
                     if event.type in [KEYDOWN, KEYUP]:
