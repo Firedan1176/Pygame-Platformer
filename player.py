@@ -3,6 +3,10 @@ from pygame.locals import *
 from pygame.math import Vector2
 import inputcontrol
 
+def getPlayer():
+    player = objects.getObjectsOfType(Player)
+    return player[0] if len(player) != 0 else None
+
 class Player(objects.Entity):
 
     speed = 5
@@ -37,7 +41,7 @@ class Player(objects.Entity):
         print("Attack!")
 
         
-    def __init__(self, z):
+    def __init__(self, z = 10):
         super().__init__(z)
         self.static = False
         self.jumped = False

@@ -8,7 +8,7 @@ import utils
 class Camera(GameObject):
 
     
-    def __init__(self, z):
+    def __init__(self, z = 15):
         super().__init__(z)
         self.target = None #Call setTarget to set a target for the camera to follow
         self.targetSpeed = 0.2

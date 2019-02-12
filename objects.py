@@ -12,10 +12,12 @@ Base object for game, used for display, movement and position
 class GameObject():
     def __init__(self, z = 1, position = Vector2(0, 0), scale = Vector2(32, 32)):
         self.z = z
-        self.position = position
-        self.scale = scale
+        self.position = position if type(position) == Vector2 else Vector2(position)
+        self.scale = scale if type(scale) == Vector2 else Vector2(scale)
         self.rotation = 0
         self.visible = True
+        self.sprite = None
+        self.color = None
 
         insertObject(self)
 
@@ -50,7 +52,7 @@ class GameObject():
 Object which has physics interactions
 """
 class Entity(GameObject):
-    def __init__(self, z, static = True, velocity = Vector2(0, 0)):
+    def __init__(self, z = 1, static = True, velocity = Vector2(0, 0)):
         super().__init__(z)
         self.static = static
         self.velocity = velocity
@@ -64,6 +66,8 @@ class Entity(GameObject):
     #Note: Higher classes that inherit from a lower class will be returned.
     #i.e. Entity will return <type 'Player'>, not its child <type 'Entity'>
 def getObjectsOfType(classType = GameObject):
+    if classType == GameObject:
+        return scene_gameobjects
     return [item for item in scene_gameobjects if classType in item.__class__.mro()]
 
 """Inserts a GameObject into the scene."""
@@ -91,4 +95,3 @@ def removeObject(obj):
     global scene_gameobjects
     scene_gameobjects.remove(obj)
     del obj
-
