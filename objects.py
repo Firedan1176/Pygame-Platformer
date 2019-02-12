@@ -52,7 +52,7 @@ class GameObject():
 Object which has physics interactions
 """
 class Entity(GameObject):
-    def __init__(self, z = 1, static = True, velocity = Vector2(0, 0)):
+    def __init__(self, z = 1, position = Vector2(0, 0), scale = Vector2(32, 32), static = True, velocity = Vector2(0, 0)):
         super().__init__(z)
         self.static = static
         self.velocity = velocity

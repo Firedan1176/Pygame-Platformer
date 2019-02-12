@@ -1,10 +1,38 @@
 {
 	"version": 1,
-	"GameObject": {
-		"z": "1",
-		"pos": "(0, 0)",
+	"Background": {
+		"class": "GameObject",
+		"z": "0",
+		"position": "(0, 0)",
 		"scale": "(480, 270)",
-		"color": "(20, 20, 20)"
+		"color": "(50, 50, 50)"
+	},
+	"Floor": {
+		"class": "Entity",
+		"z": "10",
+		"position": "(-2500, -10)",
+		"scale": "(5000, 10)",
+		"color": "(200, 200, 200)"
+	},
+	"Wall 1": {
+		"class": "Entity",
+		"z": "10",
+		"position": "(-80, 60)",
+		"scale": "(10, 250)",
+		"color": "(200, 200, 200)"
+	},
+	"Wall 2": {
+		"class": "Entity",
+		"z": "10",
+		"position": "(-20, 60)",
+		"scale": "(10, 300)",
+		"color": "(200, 200, 200)"
+	},
+	"Player": {
+		"class": "Player",
+		"z": "10",
+		"position": "(0, 100)",
+		"scale": "(16, 24)",
+		"color": "(255, 255, 255)"
 	}
-
 }

@@ -29,12 +29,6 @@ scene = loading.load("test_map")
 camera = Camera(15)
 camera.setTarget(player.getPlayer())
 
-x = 0
-for obj in objects.getObjectsOfType():
-    t = ui.Text(text = str(type(obj)) + " " + str(obj.z) + " " + str(obj.position) + " " + str(obj.color))
-    t.setPosition((0, x))
-    x += 12
-
 while True:
     inputcontrol.evaluate(pygame.event.get())
     physics.solve(objects.getObjectsOfType(Entity))

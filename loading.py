@@ -5,6 +5,8 @@ import json
 import ast
 import player
 
+from pygame.math import Vector2
+
 
 #Classes to generate Objects from in the scene
 CLASSES = {
@@ -15,7 +17,21 @@ CLASSES = {
 #Ignore these keywords in the json
 IGNORE_TYPES = ["version"]
 
+IGNORE_VALUES = ["class"]
+
+#Pairs of values and their corresponding complex class.
+#Example from a file:
+#>"position":(32, 32)
+#Literally evaluated as a tuple, but since 'position' is in the table
+#below as a Vector2, the tuple will be converted to a Vector2.
+#Optionally, use a lambda expression instead of the init() of the class
+TYPE_TABLE = {
+        "position":Vector2,
+        "scale":Vector2
+    }
+
 LOADING_VERSION = 1
+DEBUGGING = False
 
 def load(filename):
     objects.unloadScene()
@@ -36,23 +52,41 @@ def load(filename):
     if obj["version"] != LOADING_VERSION:
         raise IOError("The file '" + filename + "' cannot be loaded because it's using a different version (" + str(obj["version"]) + ", requiring " + str(LOADING_VERSION) + ")")
 
-    for scene_object in obj.items():
-        pass
-        if scene_object[0] in IGNORE_TYPES: continue
-        elif scene_object[0] in CLASSES:
-            _classType = CLASSES[scene_object[0]]
+    #Returns value [1] for each item in the json that is a dict
+    for scene_object in [x for x in obj.items() if type(x[1]) == dict]:
+        _name = scene_object[0]
+        _objSource = scene_object[1]
+        _class = _objSource["class"]
+        
+        if _class in IGNORE_TYPES: continue
+        elif _class in CLASSES:
+            _classType = CLASSES[_class]
 
-            _obj = _classType()
+            if DEBUGGING: print("Loading", _classType, "...")
             
-            for _attrib in scene_object[1].items():
-                setattr(_obj, _attrib[0], ast.literal_eval(_attrib[1]))
+            _obj = _classType()
+            _obj.name = _name
+            
+            for _attrib in _objSource.items():
+                if _attrib[0] in IGNORE_VALUES: continue
+
+                _val = ast.literal_eval(_attrib[1])
+
+                #If there's a format that's paired up (ie. tuple and Vector2), convert it from the table (dictionary)
+                if _attrib[0] in TYPE_TABLE:
+                    _val = TYPE_TABLE[_attrib[0]](_val)
+                    if DEBUGGING: print("\tValue '" + _attrib[0] + "' converted to", type(_val))
+                elif DEBUGGING: print("\tValue '" + _attrib[0] + "'")
+                
+                setattr(_obj, _attrib[0], _val)
 
                 #For debugging purposes! Remove and add sprite stuff here
                 if _attrib[0] == "color":
                     _obj.colorize(_obj.color)
+
         else:
             print("Warning: Couldn't load type '" + scene_object[0] + "' (Not a valid type)")
-    
+
     return True
 
 def save():

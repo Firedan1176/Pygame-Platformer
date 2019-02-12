@@ -42,3 +42,4 @@ class Camera(GameObject):
     def setTarget(self, obj):
         if GameObject in obj.__class__.mro():
             self.target = obj
+
