@@ -16,7 +16,7 @@ def buildSprites(path,size):
     for y in range(ycount):
         for x in range(xcount):
             temp = pygame.Surface(size)
-            temp.blit(img,(0,0),((x*16),(y*16),size[0],size[1]))
+            temp.blit(img,(0,0),((x*size[0]),(y*size[1]),size[0],size[1]))
             spritelist.append(temp)
             
     return spritelist
@@ -51,6 +51,30 @@ class SpriteList():
     
     def length(self,name): #Made for shorthand for checking length of animations
         return len(self.dictionary[name])
+    
+    
+    """
+    Note that indexes for modified sprites will vary based on the order in which
+    things are loaded. I suggest any modifications be done when the file is loaded,
+    and the extra index be recorded, so that accessing the modified version can still
+    be done using the filename. Modifying a sprite from file 1 after file 2 is loaded
+    will be stored as an extra sprite of file 2. I can fix this later, just know
+    that this is how it works right now.
+    """
+    def scale(self,index,width,height,path=None):
+        temp = pygame.transform.scale(self.spritelist[index + self.fileaddition[path]],(width,height))
+        self.spritelist.append(temp)
+        return temp
+    
+    def flip(self,index,xbool,ybool,path=None):
+        temp = pygame.transform.flip(self.spirtelist[index + self.fileaddition[path]],xbool,ybool)
+        self.spritelist.append(temp)
+        return temp
+    
+    def rotate(self,index,angle,path=None): #Uses degrees, resulting image will be padded if needed.
+        temp = pygame.transform.rotate(self.spritelist[index + self.fileaddition[path]],angle)
+        self.spritelist.append(temp)
+        return temp
     
     """
     setAnimation sets indexes of currently loaded sprites to a single name, aimed to act
