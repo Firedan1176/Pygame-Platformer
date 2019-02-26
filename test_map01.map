@@ -1,0 +1,23 @@
+{
+	"version": "1"
+	"Background": {
+	"z": "0",
+	"position": "[0, 0]",
+	"scale": "[480, 270]"
+}	"Player": {
+	"z": "10",
+	"position": "[0, 100]",
+	"scale": "[16, 24]"
+}	"Wall 2": {
+	"z": "10",
+	"position": "[-20, 60]",
+	"scale": "[10, 300]"
+}	"Wall 1": {
+	"z": "10",
+	"position": "[-80, 60]",
+	"scale": "[10, 250]"
+}	"Floor": {
+	"z": "10",
+	"position": "[-2500, -10]",
+	"scale": "[5000, 10]"
+}	"name": Test map\n}

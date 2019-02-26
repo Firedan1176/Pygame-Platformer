@@ -11,6 +11,7 @@ from pygame.locals import *
 from objects import *
 import player
 import objects
+import sprite2
 
 pygame.init()
 
@@ -24,7 +25,7 @@ pygame.display.set_caption("Pygame Project")
 
 clock = pygame.time.Clock()
 
-scene = loading.load("test_map")
+scene = loading.load("test_map02")
 
 camera = Camera(15)
 camera.setTarget(player.getPlayer())

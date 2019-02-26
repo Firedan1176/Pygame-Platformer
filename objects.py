@@ -52,9 +52,10 @@ class GameObject():
 Object which has physics interactions
 """
 class Entity(GameObject):
-    def __init__(self, z = 1, position = Vector2(0, 0), scale = Vector2(32, 32), static = True, velocity = Vector2(0, 0)):
+    def __init__(self, z = 1, position = Vector2(0, 0), scale = Vector2(32, 32), static = True, collisions = True, velocity = Vector2(0, 0)):
         super().__init__(z)
         self.static = static
+        self.collisions = collisions #Disable for trigger events
         self.velocity = velocity
         self.collisionCallbacks = [] #Call these functions on collision
 
@@ -95,3 +96,16 @@ def removeObject(obj):
     global scene_gameobjects
     scene_gameobjects.remove(obj)
     del obj
+
+"""Returns a formatted string in a JSON-readable format. Used in saving"""
+def formattedPropertyString(obj):
+    if not GameObject in obj.__class__.mro():
+        raise TypeError("The object passed must inherit GameObject")
+
+    _str = "\"" + obj.name + "\": {\n" + \
+           "\t\"z\": \"" + str(obj.z) + "\",\n" + \
+           "\t\"position\": \"" + str(obj.position) + "\",\n" + \
+           "\t\"scale\": \"" + str(obj.scale) + "\"\n" + \
+           "}"
+
+    return _str

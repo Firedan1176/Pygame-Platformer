@@ -27,7 +27,7 @@ class Camera(GameObject):
         for obj in objects.getObjectsOfType(GameObject):
             #Excluded GameObjects
             if obj.__class__ in [Camera]: continue
-            if obj.visible and obj.sprite and obj.z < self.z:
+            if obj.visible and obj.tex["default"] and obj.z < self.z:
                 #Reorient the position
                 new_pos = Vector2(obj.position.x, display.get_height() - obj.position.y - obj.scale.y)
 
@@ -35,8 +35,7 @@ class Camera(GameObject):
                 new_pos -= Vector2(self.position.x, -self.position.y) * obj.z
 
 
-
-                display.blit(obj.sprite, new_pos)
+                display.blit(obj.tex["default"], new_pos)
                 
     """Set the target of the camera to follow a GameObject"""
     def setTarget(self, obj):
