@@ -1,1 +1,11 @@
-1;1;(10, 10);(512, 512);tile
+1;5;(-128, -64);(2048, 352);tile
+2;10;(0, 0);(512, 32);tile
+
+#Loading will place objects in front-to-back order,
+#so loading an object before the player (with the same z) will be in front
+
+#player
+5;10;(5, 10);(32, 32);none
+
+#Entities behind player	
+3;10;(128, 32);(32, 32);none

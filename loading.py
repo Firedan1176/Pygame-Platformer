@@ -33,11 +33,13 @@ IGNORE_VALUES = ["class"]
 #Optionally, use a lambda expression instead of the init() of the class
 TYPE_TABLE = {
         "position":Vector2,
-        "size":Vector2
+        "size":Vector2,
+        "collisions":bool,
+        "tex":str
     }
 
 VERSION = 1
-DEBUGGING = False
+DEBUGGING = True
 
 """Intermediate class for generating objects"""
 class ObjConfig:
@@ -46,9 +48,8 @@ class ObjConfig:
     databaseFile = None
     databaseText = None
     
-    def __init__(self, sourceSpritesheet, sourceStr):
+    def __init__(self, sourceStr):
         self._attribs = {}
-        self._attribs["tex"] = {}
         _id, _name = sourceStr.split('\n')[0].split(':')
         for line in sourceStr.split('\n')[1:]:
             _key, _value = line.split(':')
@@ -56,49 +57,24 @@ class ObjConfig:
                 if _value in CLASSES:
                     self._class = CLASSES[_value] #Do not generate object here. Just store which Class it is
                 else: print("Warning: type '" + _value + "' couldn't be loaded from the database.")
-            elif _key[:4] == "tex_":
-                if '..' in _value:
-                    start = int(_value.split(',')[0])
-                    end = int(_value.split(',')[len(_value.split(','))])
-                    self._attribs["tex"][_key[4:]] = sprite2.loadSprite(sourceSpritesheet, _key[4:], range(start, end), self._attribs["size"])
-                elif ',' in _value:
-                    self._attribs["tex"][_key[4:]] = sprite2.loadSprite(sourceSpritesheet, _key[4:], [int(x) for x in _value.split(',')], self._attribs["size"])
-                else:
-                    self._attribs["tex"][_key[4:]] = sprite2.loadSprite(sourceSpritesheet, _key[4:], int(_value), self._attribs["size"])
-                if DEBUGGING: print("Loaded sprite:", _key[4:])
             elif _key in TYPE_TABLE:
                 _trueVal = ast.literal_eval(_value) #Eval string to builtin
                 _trueVal = TYPE_TABLE[_key](_trueVal) #Init pygame/custom object from builtin (i.e. tuple -> vector2)
-                self._attribs[_key] = _trueVal #Set all other vals 
+                self._attribs[_key] = _trueVal #Set all other vals
 
     """Generates and returns a new object from this config"""
     def objectFrom(self, z = 0, position = Vector2(0, 0), scale = Vector2(0, 0), texmode = "none"):
-        _obj = self._class()
+        _obj = self._class(z)
         _obj.position = position
         _obj.scale = scale
 
-        #Set tex_default to straight magenta to indicate errors if not loaded
-        _obj.tex = {}
-        _obj.tex["default"] = pygame.Surface(_obj.scale)
-        _obj.tex["default"].fill((255, 0, 255))
+        #Set tex to straight magenta to indicate errors if not loaded
+        _obj.tex = pygame.Surface(_obj.scale)
+        _obj.tex.fill((255, 0, 255))
         for _key, _value in self._attribs.items():
-            #TODO: This tex stuff should probably?? be in loadSprite somewhere
-            if _key[:4] == "tex":
-                #Modify each sprite on this object
-                for tex in _value.items():
-                    if texmode == "stretch":
-                        pygame.transform.scale(tex[1], tuple(map(int, _obj.scale)), _obj.tex[tex[0]])
-                    elif texmode == "tile":
-                        _scaled = pygame.Surface(_obj.scale)
-                        for y in range(int(_obj.scale.y) // int(self._attribs["size"][1])):
-                            for x in range(int(_obj.scale.x) // int(self._attribs["size"][0])):
-                                _scaled.blit(tex[1], (x * self._attribs["size"][0], y * self._attribs["size"][1]))
-                                _obj.tex[tex[0]] = _scaled
-                    elif texmode == "none":
-                        _obj.tex[tex[0]].blit(tex[1], (0, 0))
-                        
-            else:
-                setattr(_obj, _key, _value)
+            if _key == "tex":
+                _obj.tex = sprite2.loadSprite(_value, texmode, scale)
+            else: setattr(_obj, _key, _value)
 
         return _obj
 
@@ -111,16 +87,13 @@ class ObjConfig:
                 ObjConfig.databaseText = databaseFile.read()
                 databaseFile.close()
 
-            currentSpritesheet = ""
             lines = ObjConfig.databaseText.split('\n')
             for i in range(len(lines)):
                 _key, _value = lines[i].split(":")
-                if _key == "spritesheet":
-                    currentSpritesheet = _value.replace('\"', '')
-                elif not lines[i][0] == "\t" and lines[i + 1][0] == "\t":
+                if not lines[i][0] == "\t" and lines[i + 1][0] == "\t":
                     _objValue = lines[i] + "\n"
                     while lines[i + 1][0] == "\t":
-                        if not lines[i + 2][0] == "\t":
+                        if i + 2 == len(lines) or not lines[i + 2][0] == "\t":
                             _objValue += lines[i + 1]
                             break
                         else:
@@ -129,7 +102,7 @@ class ObjConfig:
                     _objValue = _objValue.replace('\t', '')
                     if int(_key) == obj_id:
                         if DEBUGGING: print("Found matching ID:", _key)
-                        _obj = ObjConfig(currentSpritesheet, _objValue)
+                        _obj = ObjConfig(_objValue)
                         x = ObjConfig.loadedObjs[obj_id] = _obj
                         return x
             
@@ -158,7 +131,8 @@ def load(filename):
     
     #Meat of the loading
     for line in file_text.split('\n'):
-
+        #Skip comments and empty lines
+        if len(line) == 0 or line[0] == "#": continue
         #Properties are separated by semicolon in map file.
         #Property order: [ID];[Z];[POS];[SCALE];[TEXMODE]
         props = line.split(';')

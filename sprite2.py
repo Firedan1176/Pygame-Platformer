@@ -1,49 +1,28 @@
 import pygame
 
-loadedSpritesheets = {}
 loadedSprites = {}
 
-def loadSpritesheet(filename, useColorkey = True):
-    try:
-        if useColorkey:
-            _surf = pygame.image.load(filename).convert()
-            _surf.set_colorkey((255, 0, 255))
-        else:
-            _surf = pygame.image.load(filename).convert_alpha()
-    except:
-        raise IOError('There was an error loading spritesheet \'' + filename + '\'')
-    else:
-        loadedSpritesheets[filename] = _surf
-
-
-"""Load a sprite. Index can be either an integer, list, or a range()"""
-def loadSprite(filename, name, index, scale = (32, 32)):
-    if type(index) == list or type(index) == range:
-        if not filename in loadedSpritesheets:
-            loadSpritesheet(filename)
-        lst = []
-        size = loadedSpritesheets[filename].get_size()
-        for i in index:
-            coords = (i % (size[0] // scale[0]), i // (size[1] // scale[1]))
-
-            surf = pygame.Surface(scale)
-            surf.blit(loadedSpritesheets[filename], coords)
-
-            lst.append(surf)
-
-        loadedSprites[filename + "_" + name] = lst
-        return lst
+"""Load a sprite. Mode can be None, 'stretch', or 'tile', where scale is the size of the object."""
+def loadSprite(filename, mode = None, scale = None):
+    if filename in loadedSprites:
+        return loadedSprites[filename]
     
-    elif type(index) == int:
-        if not filename in loadedSpritesheets:
-            loadSpritesheet(filename)
-        size = loadedSpritesheets[filename].get_size()
-        coords = (index % (size[0] // scale[0]), index // (size[1] // scale[1]))
+    try:
+        _surf = pygame.image.load(filename).convert_alpha()
+        if mode == "tile" and scale:
+            trueSize = (int(scale[0]) // _surf.get_width(), int(scale[1]) // _surf.get_height())
+            print(scale, trueSize)
+            _scaledSurf = pygame.Surface(scale)
+            for y in range(trueSize[1]):
+                for x in range(trueSize[0]):
+                    _scaledSurf.blit(_surf, (x * _surf.get_width(), y * _surf.get_height()))
+            _surf = _scaledSurf
 
-        surf = pygame.Surface(scale)
-        surf.blit(loadedSpritesheets[filename], coords)
-
-        loadedSprites[filename + "_" + name] = surf
-        return surf
+        elif mode == "stretch" and scale:
+            raise NotImplementedError()
+    except Exception as e:
+        raise IOError('There was an error loading sprite \'' + filename + '\':\n' + str(e))
     else:
-        raise TypeError('Failed to load sprite: index must be an int, list, or range() (got ' + str(type(index)) + ')')
+        new_name = filename + ("_" + str(mode) if mode else "") + ("_" + str(scale) if scale else "")
+        loadedSprites[new_name] = _surf
+        return _surf

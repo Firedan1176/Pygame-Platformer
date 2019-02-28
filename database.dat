@@ -1,18 +1,23 @@
-spritesheet:"test_spritesheet_01.png"
 1:Brick
 	class:GameObject
 	size:(32, 32)
-	tex_default:0
+	tex:"brick.png"
 2:Grass
 	class:Entity
 	size:(32, 32)
-	tex_default:1
+	tex:"grass.png"
 3:Chest
 	class:Entity
 	size:(32, 32)
-	tex_default:2
+	tex:"chest.png"
+	collisions:False
 4:Coin
 	class:Entity
 	size:(32, 32)
-	tex_default:3
+	tex:"coin.png"
 	collisions:False
+5:Player
+	class:Player
+	size:(32, 32)
+	tex:"coin.png"
+	collisions:True

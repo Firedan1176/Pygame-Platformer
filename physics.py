@@ -30,6 +30,9 @@ def solve(phys_objs):
         obj.position.x += obj.velocity.x
         col_normal = Vector2(0, 0)
         for col in getCollisions(obj, phys_objs):
+            if not col.collisions:
+                #Do not apply collisions, trigger type only
+                continue
             #Moving right? obj's right side = collider's left side
             if obj.velocity.x > 0:
                 obj.position.x = col.position.x - obj.scale.x
@@ -41,6 +44,9 @@ def solve(phys_objs):
                 col_normal.x = -1
         obj.position.y += obj.velocity.y
         for col in getCollisions(obj, phys_objs):
+            if not col.collisions:
+                #Do not apply collisions, trigger type only
+                continue
             if obj.velocity.y > 0:
                 obj.velocity.y = 0
                 obj.position.y = col.position.y - obj.scale.y
