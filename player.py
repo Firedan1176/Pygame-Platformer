@@ -9,9 +9,9 @@ def getPlayer():
 
 class Player(objects.Entity):
 
-    speed = 5
+    speed = 3
     frozen = False
-    jumpSpeed = 10
+    jumpSpeed = 6
     inertia = 0.1   #Higher value stops player movement faster
     jump_off_wall = True
     wallFriction = 0.6 #0-1. Higher value causes less friction

@@ -2,7 +2,7 @@ from pygame.math import Vector2
 import math
 import utils
 
-gravity = Vector2(0, -0.66)
+gravity = Vector2(0, -0.5)
 terminal_velocity = 12
 
 """Checks for intersections on GameObjects a and b. Objects that are edge-to-edge/touching are not considered intersecting."""
