@@ -7,11 +7,11 @@ import utils
 
 class Camera(GameObject):
 
+    targetSpeed = 0.2
     
     def __init__(self, z = 15):
         super().__init__(z)
         self.target = None #Call setTarget to set a target for the camera to follow
-        self.targetSpeed = 0.2
 
     #TODO: Add chunking of objects for complex scenes
     def render(self, display):
@@ -20,14 +20,14 @@ class Camera(GameObject):
 
             #Smooth camera movement
             #TODO: Add borders for edges of map???
-            goal = (self.target.position - screen_center) / (self.target.z)
+            goal = (self.target.position - screen_center) / self.target.z
             self.position = Vector2.lerp(self.position, goal, self.targetSpeed)
 
 
         for obj in objects.getObjectsOfType(GameObject):
             #Excluded GameObjects
             if obj.__class__ in [Camera]: continue
-            if obj.visible and obj.tex and obj.z < self.z:
+            if obj.visible and obj.z < self.z:
                 #Reorient the position
                 new_pos = Vector2(obj.position.x, display.get_height() - obj.position.y - obj.scale.y)
 
@@ -35,7 +35,7 @@ class Camera(GameObject):
                 new_pos -= Vector2(self.position.x, -self.position.y) * obj.z
 
 
-                display.blit(obj.tex, new_pos)
+                display.blit(obj.getSprite(), new_pos)
                 
     """Set the target of the camera to follow a GameObject"""
     def setTarget(self, obj):

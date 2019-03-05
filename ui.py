@@ -1,4 +1,6 @@
 import pygame
+import sprite2
+from local import *
 
 _uiElements = []
 """Class used to define UI elements on screen"""
@@ -9,6 +11,8 @@ class Panel:
         self._surface = pygame.Surface((rect.w, rect.h))
         self._color = color
         self._surface.fill(color)
+        
+        self.visible = True
 
         global _uiElements
         _uiElements.append(self)
@@ -20,6 +24,12 @@ class Panel:
         if not Panel in target._class_.mro():
             raise TypeError('Target parent must derive from Panel')
         self._parent = target
+
+    def offsetPosition(self, position):
+        self._rect = self._rect.move(position)
+
+    def setPosition(self, position):
+        self._rect.topleft = position
 
 class Text(Panel):     
     def __init__(self, pos = (0, 0), text = "", textColor = (255, 255, 255), size = 1):
@@ -43,7 +53,32 @@ class Text(Panel):
     def setPosition(self, position):
         self._rect = pygame.Rect(position[0], position[1], self._rect.w, self._rect.h)
 
+    def render(self, display):
+        display.blit(self._surface, self._rect)
+        
+class ModalWindow(Panel):
+
+    GENERIC = "art/ui/modal_generic.png"
+    
+    
+    def __init__(self, pos = (0, 0), size = (96, 96), windowType = GENERIC):
+        #TODO: Expand these, add more stickies
+        if type(pos) == str:
+            displaySize = (SCREENWIDTH, SCREENHEIGHT)
+            if pos == "center":
+                pos = ((displaySize[0] / 2) - (size[0] / 2), (displaySize[1] / 2) - (size[1] / 2))
+        super().__init__(pygame.Rect(pos, size))
+        self._surface = sprite2.loadSprite(ModalWindow.GENERIC, mode = "9slice", scale = size)
+
+    def render(self, display):
+        display.blit(self._surface, self._rect)
+
+    def scale(self, size):
+        self._rect = self._rect.inflate(size)
+        self._surface = sprite2.loadSprite(ModalWindow.GENERIC, mode = "9slice", scale = self._rect.size, exclude = True)
+
+
     
 def render(display):
     for element in _uiElements:
-        display.blit(element._surface, element._rect)
+        if element.visible: element.render(display)

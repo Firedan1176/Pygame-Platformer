@@ -7,10 +7,8 @@
 	size:(32, 32)
 	tex:"grass.png"
 3:Chest
-	class:Entity
-	size:(32, 32)
+	class:Chest
 	tex:"chest.png"
-	collisions:False
 4:Coin
 	class:Entity
 	size:(32, 32)

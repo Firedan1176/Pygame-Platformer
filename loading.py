@@ -18,7 +18,8 @@ object_database = {}
 CLASSES = {
         "GameObject":objects.GameObject,
         "Entity":objects.Entity,
-        "Player":player.Player
+        "Player":player.Player,
+        "Chest":objects.Chest
     }
 #Ignore these keywords in the json
 IGNORE_TYPES = ["version"]
@@ -69,11 +70,11 @@ class ObjConfig:
         _obj.scale = scale
 
         #Set tex to straight magenta to indicate errors if not loaded
-        _obj.tex = pygame.Surface(_obj.scale)
-        _obj.tex.fill((255, 0, 255))
+        _obj.sprite = pygame.Surface(_obj.scale)
+        _obj.sprite.fill((255, 0, 255))
         for _key, _value in self._attribs.items():
             if _key == "tex":
-                _obj.tex = sprite2.loadSprite(_value, texmode, scale)
+                _obj.sprite = sprite2.loadSprite(_value, texmode, scale)
             else: setattr(_obj, _key, _value)
 
         return _obj

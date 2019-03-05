@@ -3,6 +3,7 @@ from pygame.math import Vector2
 import utils
 import physics
 import sprites
+import ui
 
 scene_gameobjects = []
 
@@ -48,6 +49,9 @@ class GameObject():
         elif type(dx) == int and type(dy) == int:
             self.position += Vector2(dx,dy)
 
+    def getSprite(self):
+        return self.sprite
+
 """
 Object which has physics interactions
 """
@@ -62,6 +66,54 @@ class Entity(GameObject):
         def __str__(self):
             return "Entity " + str(self.position)
 
+"""
+An entity that holds objects for the player.
+"""
+class Chest(Entity):
+    def __init__(self, z = 1, position = Vector2(0, 0), items = [], capacity = 32):
+        super().__init__(z, position, Vector2(32, 2), True, False, Vector2(0, 0))
+        self._items = items
+        self.opened = False
+        self.window = ui.ModalWindow(pos = "center", size = (96, 128))
+        self.window.offsetPosition((-96, 0))
+        self.window.visible = False
+
+    def __str__(self):
+        return "Chest " + str(self.position)
+
+    """Add an item to the Chest. Returns True if successfully added."""
+    def addItem(self, item):
+        if len(self._items) == self.capacity:
+            return False
+        self._items += item
+        return True
+
+    """Removes an item from the Chest. Returns True if successfully removed."""
+    def removeItem(self, item):
+        if item in self._items:
+            self._items.remove(item)
+            return True
+        return False
+
+    def updateWindow(self):
+        for item in self._items:
+            pass
+            #TODO: parent items to the ModalWindow as Text objects
+
+    def interact(self, player):
+        if not self.opened:
+            player.frozen = True
+            print("Open chest!")
+            self.updateWindow()
+            self.window.visible = True
+            self.opened = True
+        else:
+            player.frozen = False
+            print("Close chest!")
+            self.window.visible = False
+            self.opened = False
+
+        
 #Returns sublist of scene_gameobjects if it's the same classtype or one of its inherited are
     #i.e. Entity will return all entities and classes that inherit from Entity (i.e. Player, Enemy, etc.)
     #Note: Higher classes that inherit from a lower class will be returned.

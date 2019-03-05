@@ -28,34 +28,46 @@ def solve(phys_objs):
         obj.velocity += gravity
         obj.velocity.y = utils.clamp(-terminal_velocity, terminal_velocity, obj.velocity.y)
         obj.position.x += obj.velocity.x
-        col_normal = Vector2(0, 0)
+        collisionData = []
         for col in getCollisions(obj, phys_objs):
-            if not col.collisions:
-                #Do not apply collisions, trigger type only
-                continue
+            data = (col, Vector2(0, 0))
+            collisionData.append(data)
             #Moving right? obj's right side = collider's left side
             if obj.velocity.x > 0:
-                obj.position.x = col.position.x - obj.scale.x
-                obj.velocity.x = 0
-                col_normal.x = 1
+                if col.collisions:
+                    obj.velocity.x = 0
+                    obj.position.x = col.position.x - obj.scale.x
+                data[1].x = 1
             elif obj.velocity.x < 0:
-                obj.velocity.x = 0
-                obj.position.x = col.position.x + col.scale.x
-                col_normal.x = -1
+                if col.collisions:
+                    obj.velocity.x = 0
+                    obj.position.x = col.position.x + col.scale.x
+                data[1].x = -1
         obj.position.y += obj.velocity.y
-        for col in getCollisions(obj, phys_objs):
-            if not col.collisions:
-                #Do not apply collisions, trigger type only
-                continue
-            if obj.velocity.y > 0:
-                obj.velocity.y = 0
-                obj.position.y = col.position.y - obj.scale.y
-                col_normal.y = 1
-            elif obj.velocity.y < 0:
-                obj.velocity.y = 0
-                obj.position.y = col.position.y + col.scale.y
-                col_normal.y = -1
 
+        for col in getCollisions(obj, phys_objs):         
+            data = None
+            for x in collisionData:
+                if col == x[0]:
+                    data = x
+                    break
+            if not data:
+                data = (col, Vector2(0, 0))
+                collisionData.append(data)
+                
+            if obj.velocity.y > 0:
+                if col.collisions:
+                    obj.velocity.y = 0
+                    obj.position.y = col.position.y - obj.scale.y
+                data[1].y = 1
+            elif obj.velocity.y < 0:
+                if col.collisions:
+                    obj.velocity.y = 0
+                    obj.position.y = col.position.y + col.scale.y
+                data[1].y = -1
+
+        obj.collisionData = collisionData
+        #Call functions
         for callback in obj.collisionCallbacks:
-            callback(col_normal)
+            callback(collisionData)
 
