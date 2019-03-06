@@ -30,6 +30,9 @@ clock = pygame.time.Clock()
 
 scene = loading.load("test_map02")
 
+chest = objects.getObjectsOfType(Chest)[0]
+chest._items = [Item("Potion"), Item("Potion"), Item("Book")]
+
 
 
 #####
@@ -45,4 +48,3 @@ while True:
     display.blit(scaled_display, (0, 0))
     pygame.display.update()
     clock.tick(60)
-    

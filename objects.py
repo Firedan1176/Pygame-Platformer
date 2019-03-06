@@ -77,6 +77,7 @@ class Chest(Entity):
         self.window = ui.ModalWindow(pos = "center", size = (96, 128))
         self.window.offsetPosition((-96, 0))
         self.window.visible = False
+        self.updateWindow()
 
     def __str__(self):
         return "Chest " + str(self.position)
@@ -86,32 +87,51 @@ class Chest(Entity):
         if len(self._items) == self.capacity:
             return False
         self._items += item
+        self.updateWindow()
         return True
 
-    """Removes an item from the Chest. Returns True if successfully removed."""
+    """Removes an item from the Chest. Returns the item if successfully removed."""
     def removeItem(self, item):
         if item in self._items:
             self._items.remove(item)
-            return True
+            self.updateWindow()
+            return item
         return False
 
     def updateWindow(self):
-        for item in self._items:
-            pass
-            #TODO: parent items to the ModalWindow as Text objects
+        for x in range(len(self.window.getChildren())):
+            self.window.getChildren()[0].destroy()
+            
+        for x in range(len(self._items)):
+            _text = ui.Text(self.window, pos = (16, 16 + x * 12), text = self._items[x]._name)
+            
 
     def interact(self, player):
         if not self.opened:
             player.frozen = True
-            print("Open chest!")
             self.updateWindow()
             self.window.visible = True
             self.opened = True
         else:
             player.frozen = False
-            print("Close chest!")
             self.window.visible = False
             self.opened = False
+
+class Item:
+    def __init__(self, name, sprite = None, action = None):
+        self._name = name
+        self._sprite = sprite
+        self._action = action
+
+    def run(self, args = None):
+        self._action(args)
+
+    def getSprite(self):
+        return self._sprite
+
+
+
+
 
         
 #Returns sublist of scene_gameobjects if it's the same classtype or one of its inherited are

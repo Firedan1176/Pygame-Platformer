@@ -1,4 +1,5 @@
 import objects
+import pygame
 from pygame.locals import *
 from pygame.math import Vector2
 import inputcontrol
@@ -21,6 +22,7 @@ class Player(objects.Entity):
         self.static = False
         self.jumped = False
         self.wall_hug = False
+        self.dir = 1
         inputcontrol.createAxis("Move Horizontal", K_RIGHT, K_LEFT, self.move) 
         inputcontrol.createInput("Attack", 1, KEYDOWN, self.attack)
         inputcontrol.createInput("Jump", K_SPACE, KEYDOWN, self.jump)
@@ -33,6 +35,10 @@ class Player(objects.Entity):
             #Move to a stop
             self.velocity = Vector2.lerp(self.velocity, Vector2(0, 0), self.inertia)
         else:
+            if self.dir != val and val != 0:
+                #Flip sprite
+                self.sprite = pygame.transform.flip(self.sprite, True, False)
+                self.dir = val
             #Regular movement
             self.velocity = Vector2.lerp(self.velocity, Vector2(val * self.speed, self.velocity.y), self.inertia)
 
