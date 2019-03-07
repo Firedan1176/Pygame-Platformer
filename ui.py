@@ -89,7 +89,7 @@ class Text(Panel):
         
 class ModalWindow(Panel):
 
-    GENERIC = "art/ui/modal_generic.png"
+    GENERIC = "art/ui/modal_generic"
     
     
     def __init__(self, parent = None, pos = (0, 0), size = (96, 96), windowType = GENERIC):

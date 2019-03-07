@@ -35,7 +35,7 @@ class Camera(GameObject):
                 new_pos -= Vector2(self.position.x, -self.position.y) * obj.z
 
 
-                display.blit(obj.getSprite(), new_pos)
+                display.blit(obj.updateSprite(), new_pos)
                 
     """Set the target of the camera to follow a GameObject"""
     def setTarget(self, obj):

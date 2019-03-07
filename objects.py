@@ -2,7 +2,7 @@ import pygame
 from pygame.math import Vector2
 import utils
 import physics
-import sprites
+import sprite2
 import ui
 
 scene_gameobjects = []
@@ -19,6 +19,12 @@ class GameObject():
         self.visible = True
         self.sprite = None
         self.color = None
+        
+        self.isPlaying = False      #Is the sprite animation playing?
+        self.looping = True         #Is the sprite animation looping?
+        self.currentSprite = 0      #Current sprite to display
+        self.spriteSpeed = 0.2      #Playback rate of sprite animations
+        self.spriteUpdateDelta = 0  #Frame counter for skipping animation updates
 
         insertObject(self)
 
@@ -49,8 +55,35 @@ class GameObject():
         elif type(dx) == int and type(dy) == int:
             self.position += Vector2(dx,dy)
 
-    def getSprite(self):
+    """Updates the sprite on this GameObject and returns it."""
+    def updateSprite(self):
+        if self.isPlaying:
+            if self.currentSprite == len(self.sprite) - 1 and self.spriteUpdateDelta >= 1 / self.spriteSpeed:
+                if self.looping:
+                    self.currentSprite = 0
+                    self.spriteUpdateDelta = 0
+            elif self.spriteUpdateDelta >= 1 / self.spriteSpeed:
+                self.currentSprite += 1
+                self.spriteUpdateDelta = 0
+            else:
+                self.spriteUpdateDelta += 1
+            return self.sprite[self.currentSprite]
+        #Not a sprite list, just a single sprite
         return self.sprite
+
+    def play(self, animName):
+        animName = animName + "_anim"
+        if animName in sprite2.loadedSprites:
+            self.sprite = sprite2.loadedSprites[animName]
+        else:
+            raise Exception('Animation \'' + animName + '\' is not loaded yet but tried to play it')
+
+        self.isPlaying = True
+
+    def stop(self):
+        self.isPlaying = False
+        
+    
 
 """
 Object which has physics interactions

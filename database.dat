@@ -1,21 +1,21 @@
 1:Brick
 	class:GameObject
 	size:(32, 32)
-	tex:"brick.png"
+	tex:"brick"
 2:Grass
 	class:Entity
 	size:(32, 32)
-	tex:"grass.png"
+	tex:"grass"
 3:Chest
 	class:Chest
-	tex:"chest.png"
+	tex:"chest"
 4:Coin
 	class:Entity
 	size:(32, 32)
-	tex:"coin.png"
+	tex:"coin"
 	collisions:False
 5:Player
 	class:Player
 	size:(32, 32)
-	tex:"coin.png"
+	tex:"coin"
 	collisions:True

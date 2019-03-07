@@ -25,7 +25,6 @@ pygame.display.set_caption("Pygame Project")
 
 clock = pygame.time.Clock()
 
-
 #####Debug stuff here
 
 scene = loading.load("test_map02")
@@ -33,11 +32,17 @@ scene = loading.load("test_map02")
 chest = objects.getObjectsOfType(Chest)[0]
 chest._items = [Item("Potion"), Item("Potion"), Item("Book")]
 
+animTile = GameObject(z = 10, position = Vector2(0, 50))
+animTile.sprite = sprite2.loadSpriteAnimation("player_idle")
+animTile.play("player_idle")
 
 
 #####
 camera = Camera(15)
 camera.setTarget(player.getPlayer())
+
+fps_delay = 120 #Show fps every 2 seconds
+fps_delta = 0
 
 while True:
     inputcontrol.evaluate(pygame.event.get())
@@ -48,3 +53,10 @@ while True:
     display.blit(scaled_display, (0, 0))
     pygame.display.update()
     clock.tick(60)
+
+    #Show FPS
+    if fps_delta >= fps_delay:
+        fps_delta = 0
+        print("%0.2f" % clock.get_fps() + " FPS")
+
+    fps_delta += 1

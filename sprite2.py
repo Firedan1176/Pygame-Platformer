@@ -10,7 +10,7 @@ def loadSprite(filename, mode = None, scale = None, exclude = False):
         return loadedSprites[filename]
     
     try:
-        _surf = pygame.image.load(filename).convert_alpha()
+        _surf = pygame.image.load(filename + ".png").convert_alpha()
         if mode == "tile" and scale:
             trueSize = (int(scale[0]) // _surf.get_width(), int(scale[1]) // _surf.get_height())
             print(scale, trueSize)
@@ -65,3 +65,32 @@ def loadSprite(filename, mode = None, scale = None, exclude = False):
             new_name = filename + ("_" + str(mode) if mode else "") + ("_" + str(scale) if scale else "")
             loadedSprites[new_name] = _surf
         return _surf
+
+"""
+Loads a series of sprites from a file into a List. Sprites should be left -> right.
+cellSize:    Size of each sprite to load from file.
+count:       Total sprites to load. Will discard any after this number.
+"""
+def loadSpriteAnimation(filename, cellSize = (32, 32), count = 0):
+    if filename in loadedSprites:
+        return loadedSprites[filename]
+    try:
+        _surf = pygame.image.load(filename + ".png").convert_alpha()
+
+        _list = []
+        for row in range(_surf.get_height() // cellSize[1]):
+            for col in range(_surf.get_width() // cellSize[0]):
+                x = pygame.Surface(cellSize, flags = pygame.SRCALPHA)
+                x.blit(_surf, (0, 0), area = pygame.Rect((col * cellSize[0], row * cellSize[1]), cellSize))
+                _list.append(x)
+
+        if count > 0:
+            for x in range(len(_list) - count):
+                _list.pop()
+
+    except Exception as e:
+        raise IOError('There was an error loading sprite animation \'' + filename + '\':\n' + str(e))
+    else:
+        new_name = filename + "_anim"
+        loadedSprites[new_name] = _list
+        return _list
