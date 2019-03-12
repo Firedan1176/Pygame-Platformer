@@ -36,12 +36,15 @@ animTile = GameObject(z = 10, position = Vector2(0, 50))
 animTile.sprite = sprite2.loadSpriteAnimation("player_idle")
 animTile.play("player_idle")
 
+_player = objects.getObjectsOfType(player.Player)[0]
+_player.sprite = sprite2.loadSpriteAnimation("player_idle")
+_player.play("player_idle")
 
 #####
 camera = Camera(15)
 camera.setTarget(player.getPlayer())
 
-fps_delay = 120 #Show fps every 2 seconds
+fps_delay = 60 #Show fps every second
 fps_delta = 0
 
 while True:
@@ -55,7 +58,7 @@ while True:
     clock.tick(60)
 
     #Show FPS
-    if fps_delta >= fps_delay:
+    if fps_delta >= fps_delay and DEBUGGING:
         fps_delta = 0
         print("%0.2f" % clock.get_fps() + " FPS")
 

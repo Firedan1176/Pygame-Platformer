@@ -9,7 +9,7 @@ import player
 import sprite2
 
 from pygame.math import Vector2
-
+from local import *
 
 """Dictionary that pairs an ID to an intermediate class for object configurations"""
 object_database = {}
@@ -40,7 +40,6 @@ TYPE_TABLE = {
     }
 
 VERSION = 1
-DEBUGGING = True
 
 """Intermediate class for generating objects"""
 class ObjConfig:
@@ -107,7 +106,7 @@ class ObjConfig:
                         x = ObjConfig.loadedObjs[obj_id] = _obj
                         return x
             
-            print("Not found")
+            print("Loading get: Not found")
 
     """Note you may not want to really ever do this"""
     def purge():

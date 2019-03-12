@@ -58,6 +58,7 @@ class GameObject():
     """Updates the sprite on this GameObject and returns it."""
     def updateSprite(self):
         if self.isPlaying:
+            print(self, type(self.sprite))
             if self.currentSprite == len(self.sprite) - 1 and self.spriteUpdateDelta >= 1 / self.spriteSpeed:
                 if self.looping:
                     self.currentSprite = 0
@@ -76,14 +77,12 @@ class GameObject():
         if animName in sprite2.loadedSprites:
             self.sprite = sprite2.loadedSprites[animName]
         else:
-            raise Exception('Animation \'' + animName + '\' is not loaded yet but tried to play it')
+            raise Exception('Cannot play animation: Animation \'' + animName + '\' is not loaded')
 
         self.isPlaying = True
 
     def stop(self):
         self.isPlaying = False
-        
-    
 
 """
 Object which has physics interactions
@@ -145,10 +144,12 @@ class Chest(Entity):
             self.updateWindow()
             self.window.visible = True
             self.opened = True
+            player.currentInteraction = self
         else:
             player.frozen = False
             self.window.visible = False
             self.opened = False
+            player.currentInteraction = None
 
 class Item:
     def __init__(self, name, sprite = None, action = None):
@@ -162,9 +163,7 @@ class Item:
     def getSprite(self):
         return self._sprite
 
-
-
-
+    
 
         
 #Returns sublist of scene_gameobjects if it's the same classtype or one of its inherited are
@@ -187,6 +186,7 @@ def insertObject(obj):
     i = utils.binarySearch([x.z for x in scene_gameobjects], obj.z, 0, len(scene_gameobjects) - 1)
     scene_gameobjects = scene_gameobjects[:i] + [obj] + scene_gameobjects[i:]
 
+    
 """Clears all objects from the scene."""
 def unloadScene():
     scene_gameobjects.clear()

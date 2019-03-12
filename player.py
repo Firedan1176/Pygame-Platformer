@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from pygame.math import Vector2
 import inputcontrol
+import sprite2
 
 def getPlayer():
     player = objects.getObjectsOfType(Player)
@@ -23,6 +24,14 @@ class Player(objects.Entity):
         self.jumped = False
         self.wall_hug = False
         self.dir = 1
+        self.currentInteraction = None
+
+        #0 = Idle
+        #1 = Started moving
+        #2 = Stopped moving
+        #3 = Moving
+        self.state = 0
+        
         inputcontrol.createAxis("Move Horizontal", K_RIGHT, K_LEFT, self.move) 
         inputcontrol.createInput("Attack", 1, KEYDOWN, self.attack)
         inputcontrol.createInput("Jump", K_SPACE, KEYDOWN, self.jump)
@@ -31,6 +40,14 @@ class Player(objects.Entity):
         
     """Applies velocity to the player from raw input"""
     def move(self, val):
+        #Set the 'state' of the player's movement
+        if val == 0:
+            if self.state == 1 or self.state == 3: self.state = 2
+            else: self.state = 0
+        else:
+            if self.state == 0 or self.state == 2: self.state = 1
+            else: self.state = 3
+            
         if self.frozen:
             #Move to a stop
             self.velocity = Vector2.lerp(self.velocity, Vector2(0, 0), self.inertia)
@@ -70,4 +87,7 @@ class Player(objects.Entity):
         for pair in self.collisionData:
             if not pair[0].collisions:
                 pair[0].interact(self)
-                break #Remove this line to have multi-entity interactions
+                return #Remove this line to have multi-entity interactions
+        #Didn't return, not interacting with anything
+        if self.currentInteraction:
+            self.currentInteraction.interact(self)
