@@ -52,9 +52,7 @@ class Player(objects.Entity):
             #Move to a stop
             self.velocity = Vector2.lerp(self.velocity, Vector2(0, 0), self.inertia)
         else:
-            if self.dir != val and val != 0:
-                #Flip sprite
-                self.sprite = pygame.transform.flip(self.sprite, True, False)
+            if val != 0:
                 self.dir = val
             #Regular movement
             self.velocity = Vector2.lerp(self.velocity, Vector2(val * self.speed, self.velocity.y), self.inertia)
@@ -91,3 +89,9 @@ class Player(objects.Entity):
         #Didn't return, not interacting with anything
         if self.currentInteraction:
             self.currentInteraction.interact(self)
+
+    def render(self, display, position):
+        _sprite = self.updateSprite()
+        if self.dir == -1:
+            _sprite = pygame.transform.flip(_sprite, True, False)
+        display.blit(_sprite, position)

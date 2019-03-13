@@ -28,7 +28,7 @@ class GameObject():
 
         insertObject(self)
 
-    def __str__(self):
+    def __repr__(self):
         return "GameObject " + str(self.position) 
 
     """Used to color the GameObject for testing"""
@@ -58,7 +58,6 @@ class GameObject():
     """Updates the sprite on this GameObject and returns it."""
     def updateSprite(self):
         if self.isPlaying:
-            print(self, type(self.sprite))
             if self.currentSprite == len(self.sprite) - 1 and self.spriteUpdateDelta >= 1 / self.spriteSpeed:
                 if self.looping:
                     self.currentSprite = 0
@@ -84,6 +83,9 @@ class GameObject():
     def stop(self):
         self.isPlaying = False
 
+    def render(self, display, position):
+        raise NotImplementedError('Render method for type \'' + type(self).__name__ + '\' must be implemented since it derives from GameObject')
+
 """
 Object which has physics interactions
 """
@@ -95,8 +97,11 @@ class Entity(GameObject):
         self.velocity = velocity
         self.collisionCallbacks = [] #Call these functions on collision
 
-        def __str__(self):
-            return "Entity " + str(self.position)
+    def render(self, display, position):
+        display.blit(self.updateSprite(), position)
+
+    def __repr__(self):
+        return "Entity " + str(self.position)
 
 """
 An entity that holds objects for the player.
@@ -111,7 +116,10 @@ class Chest(Entity):
         self.window.visible = False
         self.updateWindow()
 
-    def __str__(self):
+    def render(self, display, position):
+        display.blit(self.updateSprite(), position)
+
+    def __repr__(self):
         return "Chest " + str(self.position)
 
     """Add an item to the Chest. Returns True if successfully added."""
@@ -156,6 +164,9 @@ class Item:
         self._name = name
         self._sprite = sprite
         self._action = action
+
+    def __repr__(self):
+        return "Item " + self.name
 
     def run(self, args = None):
         self._action(args)

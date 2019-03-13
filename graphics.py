@@ -34,8 +34,10 @@ class Camera(GameObject):
                 #Offset based on camera position and parallax
                 new_pos -= Vector2(self.position.x, -self.position.y) * obj.z
 
-
-                display.blit(obj.updateSprite(), new_pos)
+                if type(obj) == GameObject:
+                    display.blit(obj.updateSprite(), new_pos)
+                else:
+                    obj.render(display, new_pos)
                 
     """Set the target of the camera to follow a GameObject"""
     def setTarget(self, obj):
