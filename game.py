@@ -27,7 +27,7 @@ clock = pygame.time.Clock()
 
 #####Debug stuff here
 
-scene = loading.load("test_map02")
+scene = loading.load("test_map03")
 
 chest = objects.getObjectsOfType(Chest)[0]
 chest._items = [Item("Potion"), Item("Potion"), Item("Book")]
@@ -37,8 +37,8 @@ animTile.sprite = sprite2.loadSpriteAnimation("player_idle")
 animTile.play("player_idle")
 
 _player = objects.getObjectsOfType(player.Player)[0]
-_player.sprite = sprite2.loadSpriteAnimation("player_idle")
-_player.play("player_idle")
+_player.sprite = sprite2.loadSpriteAnimation("eggy")
+_player.play("eggy")
 
 #####
 camera = Camera(15)

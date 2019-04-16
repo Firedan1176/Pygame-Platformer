@@ -1,0 +1,52 @@
+#These comments are written by an idiot for idiots so
+#that making maps like this can be somewhat manageable.
+#I do not suggest making maps in this format, and to
+#have a level editor built to do so eaiser.
+
+#Everything included is from what I have learned after
+#crashing python's kernel over and over in order to guess
+#the syntax. In case you haven't guessed yet, pound is the
+#comment sign.
+
+#SYNTAX: PROP_ID;PROP_Z;VECTOR2_POS;VECTOR2_SCALE;TILING
+#It appears that a few things are required for a level to
+#load. First being a player (first under the player heading),
+#and second being a chest (first under the entities heading).
+
+#The player position is where the movable player is placed,
+#but a static animation copy is always placed around 0,50,
+#which is hard coded into the game file right now.
+
+#The first item is the background, with z of 5, moving slower
+#than the z=10 of everything else. The second item is the floor,
+#set to tile in a 32x32 pattern over 512 pixels
+
+#Item ID's are located within the database DAT file, which
+#contains the class, size, text identifier, and collsions
+#(though collisions only seem to be specified for two of them).
+#Note that this text identifier MUST match the file name for the
+#texture. Also, Players seem to default to coin as their starting
+#image. The current animation texture is also smaller than the
+#hitbox, and so the player can hit walls that are noticeably
+#infront of them
+
+#Everything is loaded in order, so that things that share a
+#Z-depth will be drawn so that the last item appears in front
+#of the others.
+
+
+1;5;(-128, -64);(2049, 512);tile
+
+2;10;(0, 0);(256, 32);tile
+2;10;(256,32);(32, 32);tile
+2;10;(288,64);(32, 32);tile
+2;10;(320,96);(32, 32);tile
+2;10;(352,128);(32, 32);tile
+2;10;(384,160);(32, 32);tile
+2;10;(416,192);(32, 32);tile
+
+#player
+5;10;(5, 10);(32, 32);none
+
+#Entities
+3;10;(128 ,32);(32, 32);none
